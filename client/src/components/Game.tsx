@@ -116,6 +116,21 @@ export default function Game() {
 		}));
 	}
 
+	function checkBelow() {
+		const tetrionInfo = getTetrionStateInfo();
+		const tetronimoPoints = getTetrominoPoints();
+		for (const point of tetronimoPoints) {
+			const pointBelow = [point[0], point[1] + 1];
+			if (pointBelow[1] > 16) {
+				return false;
+			} else if (tetrionInfo.includes([...pointBelow, 1])) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+	}
+
 	function getTetrionStateInfo() {
 		const tetrionInfo: Array<Array<number>> = [];
 		tetrionState.forEach((row, rowIndex) => {
@@ -124,11 +139,9 @@ export default function Game() {
 				tetrionInfo.push(formattedSquare);
 			});
 		});
-		console.log(tetrionInfo);
 		return tetrionInfo;
 	}
 
-	getTetrionStateInfo();
 	useEffect(() => {
 		if (gameState) {
 			console.log(internalClockState);
