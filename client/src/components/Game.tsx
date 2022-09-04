@@ -102,6 +102,19 @@ export default function Game() {
 		return TetrominoPoints;
 	}
 
+	function dropOne() {
+		setCurrentTetrominoState((prevState) => ({
+			...prevState,
+			coords: {
+				...prevState.coords,
+				axis: {
+					...prevState.coords.axis,
+					y: prevState.coords.axis.y + 1
+				}
+			}
+		}));
+	}
+
 	return (
 		<>
 			<button onClick={startTimer}>start timer</button>
