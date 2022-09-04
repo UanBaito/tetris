@@ -103,14 +103,14 @@ export default function Game() {
 		return TetrominoPoints;
 	}
 
-	function dropOne() {
+	function drop(levels: number) {
 		setCurrentTetrominoState((prevState) => ({
 			...prevState,
 			coords: {
 				...prevState.coords,
 				axis: {
 					...prevState.coords.axis,
-					y: prevState.coords.axis.y + 1
+					y: prevState.coords.axis.y + levels
 				}
 			}
 		}));
@@ -201,7 +201,7 @@ export default function Game() {
 	useEffect(() => {
 		if (gameState) {
 			if (checkBelow()) {
-				dropOne();
+				drop(1);
 			}
 		}
 	}, [internalClockState]);
@@ -212,7 +212,7 @@ export default function Game() {
 				case 'ArrowDown':
 					event.preventDefault();
 					if (checkBelow()) {
-						dropOne();
+						drop(1);
 					}
 					break;
 				case 'ArrowLeft':
