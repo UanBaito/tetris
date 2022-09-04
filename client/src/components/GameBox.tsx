@@ -3,26 +3,19 @@ import Square from './Square';
 
 export default function GameBox({
 	tetrionState,
-	currentTetrominoState
+	currentTetrominoState,
+	getTetrominoPoints
 }: {
 	tetrionState: Array<Array<number>>;
 	currentTetrominoState: tetromino;
+	getTetrominoPoints: () => number[][];
 }) {
 	const MappedGame = tetrionState.map((Row, rowIndex) => {
 		const newRow = Row.map((square, squareIndex) => {
-			const currentTetrominoAxis = currentTetrominoState.coords.axis;
 			const SquareCoords = [squareIndex, rowIndex];
-
-			///Here should be declared a variable with the rotation of the tetromino
-			///Then a switch statement for every rotation
-			///finally, make the for loop below iterate over the result
-
-			for (const points of currentTetrominoState.coords.shapeCoords
-				.facingUpPoints) {
-				if (
-					squareIndex === points[0] + currentTetrominoAxis.x &&
-					rowIndex === points[1] + currentTetrominoAxis.y
-				) {
+			const tetronimoPoints = getTetrominoPoints();
+			for (const points of tetronimoPoints) {
+				if (squareIndex === points[0] && rowIndex === points[1]) {
 					return (
 						<Square
 							color={currentTetrominoState.color}
