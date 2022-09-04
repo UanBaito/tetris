@@ -51,6 +51,10 @@
 	background-color: white !important;
 }
 
+.outerRow {
+	background-color: transparent !important;
+}
+
 .GameBox {
 	display: grid;
 	grid-template-columns: 50px 50px 50px 50px 50px 50px 50px 50px 50px 50px;

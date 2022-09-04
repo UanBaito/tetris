@@ -1,4 +1,5 @@
 import { tetromino } from '../interfaces';
+import Square from './Square';
 
 export default function GameBox({
 	tetrionState,
@@ -9,22 +10,37 @@ export default function GameBox({
 }) {
 	const MappedGame = tetrionState.map((Row, rowIndex) => {
 		const newRow = Row.map((square, squareIndex) => {
-			const coordX = currentTetrominoState.coords.x;
-			const coordY = currentTetrominoState.coords.y;
-			let isOccupied: boolean;
+			const currentTetrominoAxis = currentTetrominoState.coords.axis;
+			const SquareCoords = [squareIndex, rowIndex];
 
-			if (rowIndex === coordY && squareIndex === coordX) {
-				isOccupied = true;
-			} else if (square === 1) {
-				isOccupied = true;
-			} else {
-				isOccupied = false;
+			///Here should be declared a variable with the rotation of the tetromino
+			///Then a switch statement for every rotation
+			///finally, make the for loop below iterate over the result
+
+			for (const points of currentTetrominoState.coords.shapeCoords
+				.facingUpPoints) {
+				if (
+					squareIndex === points[0] + currentTetrominoAxis.x &&
+					rowIndex === points[1] + currentTetrominoAxis.y
+				) {
+					return (
+						<Square
+							color={currentTetrominoState.color}
+							SquareCoords={SquareCoords}
+						/>
+					);
+				}
+			}
+
+			let outerRow = false;
+			if (rowIndex < 2) {
+				outerRow = true;
 			}
 
 			return (
 				<div
 					key={`${rowIndex}-${squareIndex}`}
-					className={`square ${isOccupied ? 'occupied' : 'free'}`}
+					className={`square  ${outerRow ? 'outerRow' : ''}`}
 				></div>
 			);
 		});

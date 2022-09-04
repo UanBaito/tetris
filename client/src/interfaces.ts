@@ -1,9 +1,17 @@
 export interface tetromino {
 	shape: string;
 	color: string;
+	facing: number;
 	coords: {
-		x: number;
-		y: number;
+		axis: {
+			x: number;
+			y: number;
+		};
+		shapeCoords: {
+			facingUpPoints: Array<Array<number>>;
+			facingRightPoints?: Array<Array<number>>;
+			facingDownPoints?: Array<Array<number>>;
+			facingLeftPoints?: Array<Array<number>>;
+		};
 	};
-	facing: string;
 }

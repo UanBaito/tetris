@@ -5,7 +5,7 @@ export default function Game() {
 	 * Creates an empty tetrion
 	 */
 	const [tetrionState, setTetrionState] = useState<Array<Array<number>>>(
-		Array(15).fill(Array(10).fill(0))
+		Array(17).fill(Array(10).fill(0))
 	);
 
 	const [internalClockState, setInternalClockState] = useState(0); // Time in milliseconds since the game started
@@ -15,13 +15,33 @@ export default function Game() {
 	 * This is the tetromino currently controlled by the player
 	 */
 	const [currentTetrominoState, setCurrentTetrominoState] = useState({
-		shape: 'xd',
-		color: 'xd',
+		shape: 'L',
+		color: 'blue',
+		facing: 0, ///Current rotation, 0 = up, 1 = right, 2 = down, 3 = left.
 		coords: {
-			x: 0,
-			y: 0
-		},
-		facing: 'up'
+			/**
+			 * This is the position of the square that the other squares will rotate around.
+			 * When this property is updated, the other squares will be mapped around it.
+			 * This could be considered the "true" position of the entire tetromino.
+			 */
+			axis: {
+				x: 4,
+				y: 1
+			},
+			/**
+			 * The shapeCoords property tells where the squares around the axis are
+			 * depending on the rotation, describing the shape of the tetromino
+			 */
+			shapeCoords: {
+				facingUpPoints: [
+					///(x, y)
+					[0, 0],
+					[-1, 0],
+					[1, 0],
+					[-1, -1]
+				]
+			}
+		}
 	});
 
 	/**
@@ -45,39 +65,6 @@ export default function Game() {
 	 */
 	function startTimer() {
 		setgameState(true);
-	}
-
-	useEffect(() => {
-		if (gameState) {
-			dropOne();
-		}
-	}, [internalClockState]);
-
-	/*
-	 * This function is called every time the internal clock is updated using the useEffect above.
-	 * It checks if the square below the tetronimo is free, and if it is,
-	 * modifies the currentTetrominoState y coords property to drop it one level.
-	 */
-	function dropOne() {
-		const { x, y } = currentTetrominoState.coords;
-		const tetrionCoordY = tetrionState[y + 1]; /// undefined if the tetromino is at the last row
-		if (tetrionCoordY) {
-			const tetrionCoordXY = tetrionCoordY[x];
-			if (tetrionCoordXY === 0) {
-				console.log('moving');
-				setCurrentTetrominoState((prevState) => ({
-					...prevState,
-					coords: {
-						x: prevState.coords.x,
-						y: prevState.coords.y + 1
-					}
-				}));
-			} else {
-				console.log('cant move');
-			}
-		} else {
-			console.log('cant move');
-		}
 	}
 
 	return (
