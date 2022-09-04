@@ -6,7 +6,7 @@ export default function GameBox({
 	currentTetrominoState,
 	getTetrominoPoints
 }: {
-	tetrionState: Array<Array<number>>;
+	tetrionState: Array<Array<number | JSX.Element>>;
 	currentTetrominoState: tetromino;
 	getTetrominoPoints: () => number[][];
 }) {
@@ -20,10 +20,13 @@ export default function GameBox({
 						<Square
 							key={`${rowIndex}-${squareIndex}`}
 							color={currentTetrominoState.color}
-							SquareCoords={SquareCoords}
 						/>
 					);
 				}
+			}
+
+			if (square !== 0) {
+				return square;
 			}
 
 			let outerRow = false;

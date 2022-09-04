@@ -2,13 +2,14 @@ import { KeyboardEvent, SyntheticEvent, useEffect, useState } from 'react';
 import { tetromino } from '../interfaces';
 import { Tetromino } from '../tetrominos';
 import GameBox from './GameBox';
+import Square from './Square';
 export default function Game() {
 	/**
 	 * Creates an empty tetrion
 	 */
-	const [tetrionState, setTetrionState] = useState<Array<Array<number>>>(
-		Array(17).fill(Array(10).fill(0))
-	);
+	const [tetrionState, setTetrionState] = useState<
+		Array<Array<number | JSX.Element>>
+	>(Array(17).fill(Array(10).fill(0)));
 
 	const [internalClockState, setInternalClockState] = useState(0); // Time in milliseconds since the game started
 	const [gameState, setgameState] = useState(false); // When set to true, starts the game
@@ -183,7 +184,7 @@ export default function Game() {
 	}
 
 	function getTetrionStateInfo() {
-		const tetrionInfo: Array<Array<number>> = [];
+		const tetrionInfo: Array<Array<number | JSX.Element>> = [];
 		tetrionState.forEach((row, rowIndex) => {
 			row.forEach((square, squareIndex) => {
 				const formattedSquare = [squareIndex, rowIndex, square];
@@ -193,12 +194,38 @@ export default function Game() {
 		return tetrionInfo;
 	}
 
-	function place() {}
+	function place() {
+		const tetrominoPoints = getTetrominoPoints();
+		const updatedTetrion = tetrionState.map((row, rowIndex) => {
+			const newRow = row.map((square, squareIndex) => {
+				for (const point of tetrominoPoints) {
+					if (squareIndex === point[0] && rowIndex === point[1]) {
+						return (
+							<Square
+								key={`${rowIndex}-${squareIndex}`}
+								color={currentTetrominoState.color}
+							/>
+						);
+					}
+				}
+				return square;
+			});
+			return newRow;
+		});
+		setTetrionState(updatedTetrion);
+		setCurrentTetrominoState(new Tetromino());
+	}
+
+	useEffect(() => {
+		console.log(tetrionState);
+	}, [tetrionState]);
 
 	useEffect(() => {
 		if (gameState) {
 			if (checkBelow()) {
 				drop(1);
+			} else {
+				place();
 			}
 		}
 	}, [internalClockState]);
