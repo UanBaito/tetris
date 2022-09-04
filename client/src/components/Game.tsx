@@ -172,6 +172,29 @@ export default function Game() {
 		}));
 	}
 
+	function hardDrop() {
+		const tetrionInfo = getTetrionStateInfo();
+		const tetronimoPoints = getTetrominoPoints();
+		const axis = currentTetrominoState.coords.axis.y;
+		let levels = 0;
+		while (true) {
+			for (const point of tetronimoPoints) {
+				const pointBelow = [point[0], point[1] + levels];
+				if (pointBelow[1] > 16) {
+					console.log('to bottom', levels);
+					drop(levels - axis);
+					return;
+				} else if (tetrionInfo.includes([...pointBelow, 1])) {
+					console.log('collision', levels);
+					drop(levels);
+					return;
+				} else {
+					levels++;
+				}
+			}
+		}
+	}
+
 	function checkLeft() {
 		const tetrionInfo = getTetrionStateInfo();
 		const tetronimoPoints = getTetrominoPoints();
@@ -228,6 +251,8 @@ export default function Game() {
 					}
 					break;
 				case 'Space':
+					event.preventDefault;
+					hardDrop();
 					break;
 				default:
 					break; // do not block other keys
