@@ -1,5 +1,6 @@
 import { KeyboardEvent, SyntheticEvent, useEffect, useState } from 'react';
 import { tetromino } from '../interfaces';
+import { Tetromino } from '../tetrominos';
 import GameBox from './GameBox';
 export default function Game() {
 	/**
@@ -16,36 +17,7 @@ export default function Game() {
 	 * This is the tetromino currently controlled by the player
 	 */
 	const [currentTetrominoState, setCurrentTetrominoState] = useState<tetromino>(
-		{
-			shape: 'L',
-			color: 'blue',
-			facing: 0, ///Current rotation, 0 = up, 1 = right, 2 = down, 3 = left.
-			moving: true,
-			coords: {
-				/**
-				 * This is the position of the square that the other squares will rotate around.
-				 * When this property is updated, the other squares will be mapped around it.
-				 * This could be considered the "true" position of the entire tetromino.
-				 */
-				axis: {
-					x: 4,
-					y: 1
-				},
-				/**
-				 * The shapeCoords property tells where the squares around the axis are
-				 * depending on the rotation, describing the shape of the tetromino
-				 */
-				shapeCoords: {
-					facingUpPoints: [
-						///(x, y)
-						[0, 0],
-						[-1, 0],
-						[1, 0],
-						[-1, -1]
-					]
-				}
-			}
-		}
+		new Tetromino()
 	);
 
 	/**
@@ -118,8 +90,8 @@ export default function Game() {
 
 	function checkBelow() {
 		const tetrionInfo = getTetrionStateInfo();
-		const tetronimoPoints = getTetrominoPoints();
-		for (const point of tetronimoPoints) {
+		const tetrominoPoints = getTetrominoPoints();
+		for (const point of tetrominoPoints) {
 			const pointBelow = [point[0], point[1] + 1];
 			if (pointBelow[1] > 16) {
 				return false;
@@ -146,8 +118,8 @@ export default function Game() {
 
 	function checkRight() {
 		const tetrionInfo = getTetrionStateInfo();
-		const tetronimoPoints = getTetrominoPoints();
-		for (const point of tetronimoPoints) {
+		const tetrominoPoints = getTetrominoPoints();
+		for (const point of tetrominoPoints) {
 			const pointRight = [point[0] + 1, point[1]];
 			if (pointRight[0] > 8) {
 				return false;
@@ -174,11 +146,11 @@ export default function Game() {
 
 	function hardDrop() {
 		const tetrionInfo = getTetrionStateInfo();
-		const tetronimoPoints = getTetrominoPoints();
+		const tetrominoPoints = getTetrominoPoints();
 		const axis = currentTetrominoState.coords.axis.y;
 		let levels = 0;
 		while (true) {
-			for (const point of tetronimoPoints) {
+			for (const point of tetrominoPoints) {
 				const pointBelow = [point[0], point[1] + levels];
 				if (pointBelow[1] > 16) {
 					console.log('to bottom', levels);
@@ -197,8 +169,8 @@ export default function Game() {
 
 	function checkLeft() {
 		const tetrionInfo = getTetrionStateInfo();
-		const tetronimoPoints = getTetrominoPoints();
-		for (const point of tetronimoPoints) {
+		const tetrominoPoints = getTetrominoPoints();
+		for (const point of tetrominoPoints) {
 			const pointLeft = [point[0] - 1, point[1]];
 			if (pointLeft[0] < 1) {
 				return false;
@@ -220,6 +192,8 @@ export default function Game() {
 		});
 		return tetrionInfo;
 	}
+
+	function place() {}
 
 	useEffect(() => {
 		if (gameState) {
