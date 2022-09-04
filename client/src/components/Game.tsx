@@ -116,6 +116,19 @@ export default function Game() {
 		}));
 	}
 
+	function getTetrionStateInfo() {
+		const tetrionInfo: Array<Array<number>> = [];
+		tetrionState.forEach((row, rowIndex) => {
+			row.forEach((square, squareIndex) => {
+				const formattedSquare = [squareIndex, rowIndex, square];
+				tetrionInfo.push(formattedSquare);
+			});
+		});
+		console.log(tetrionInfo);
+		return tetrionInfo;
+	}
+
+	getTetrionStateInfo();
 	useEffect(() => {
 		if (gameState) {
 			console.log(internalClockState);
