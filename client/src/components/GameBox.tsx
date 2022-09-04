@@ -18,6 +18,7 @@ export default function GameBox({
 				if (squareIndex === points[0] && rowIndex === points[1]) {
 					return (
 						<Square
+							key={`${rowIndex}-${squareIndex}`}
 							color={currentTetrominoState.color}
 							SquareCoords={SquareCoords}
 						/>
