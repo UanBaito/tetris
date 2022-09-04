@@ -20,6 +20,7 @@ export default function Game() {
 			shape: 'L',
 			color: 'blue',
 			facing: 0, ///Current rotation, 0 = up, 1 = right, 2 = down, 3 = left.
+			moving: true,
 			coords: {
 				/**
 				 * This is the position of the square that the other squares will rotate around.

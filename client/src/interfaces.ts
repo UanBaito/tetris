@@ -2,6 +2,7 @@ export interface tetromino {
 	shape: string;
 	color: string;
 	facing: number;
+	moving: boolean;
 	coords: {
 		axis: {
 			x: number;
