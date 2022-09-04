@@ -159,6 +159,34 @@ export default function Game() {
 		}
 	}
 
+	function moveLeft() {
+		setCurrentTetrominoState((prevState) => ({
+			...prevState,
+			coords: {
+				...prevState.coords,
+				axis: {
+					...prevState.coords.axis,
+					x: prevState.coords.axis.x - 1
+				}
+			}
+		}));
+	}
+
+	function checkLeft() {
+		const tetrionInfo = getTetrionStateInfo();
+		const tetronimoPoints = getTetrominoPoints();
+		for (const point of tetronimoPoints) {
+			const pointLeft = [point[0] - 1, point[1]];
+			if (pointLeft[0] < 1) {
+				return false;
+			} else if (tetrionInfo.includes([...pointLeft, 1])) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+	}
+
 	function getTetrionStateInfo() {
 		const tetrionInfo: Array<Array<number>> = [];
 		tetrionState.forEach((row, rowIndex) => {
@@ -188,6 +216,11 @@ export default function Game() {
 					}
 					break;
 				case 'ArrowLeft':
+					event.preventDefault();
+					if (checkLeft()) {
+						moveLeft();
+					}
+					break;
 				case 'ArrowRight':
 					event.preventDefault;
 					if (checkRight()) {
