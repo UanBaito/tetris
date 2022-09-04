@@ -144,8 +144,9 @@ export default function Game() {
 
 	useEffect(() => {
 		if (gameState) {
-			console.log(internalClockState);
-			dropOne();
+			if (checkBelow()) {
+				dropOne();
+			}
 		}
 	}, [internalClockState]);
 
