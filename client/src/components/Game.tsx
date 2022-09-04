@@ -131,6 +131,19 @@ export default function Game() {
 		}
 	}
 
+	function moveRight() {
+		setCurrentTetrominoState((prevState) => ({
+			...prevState,
+			coords: {
+				...prevState.coords,
+				axis: {
+					...prevState.coords.axis,
+					x: prevState.coords.axis.x + 1
+				}
+			}
+		}));
+	}
+
 	function getTetrionStateInfo() {
 		const tetrionInfo: Array<Array<number>> = [];
 		tetrionState.forEach((row, rowIndex) => {
@@ -161,6 +174,9 @@ export default function Game() {
 					break;
 				case 'ArrowLeft':
 				case 'ArrowRight':
+					event.preventDefault;
+					moveRight();
+					break;
 				case 'Space':
 					break;
 				default:
