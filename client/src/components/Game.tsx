@@ -70,7 +70,7 @@ export default function Game() {
 		setgameState(true);
 	}
 
-	function getTetrominoPoints() {
+	function getTetrominoPoints(): number[][] {
 		const axis = currentTetrominoState.coords.axis;
 		const rotation = currentTetrominoState.facing;
 		let relativePoints!: number[][];
@@ -108,6 +108,7 @@ export default function Game() {
 			<GameBox
 				tetrionState={tetrionState}
 				currentTetrominoState={currentTetrominoState}
+				getTetrominoPoints={getTetrominoPoints}
 			/>
 		</>
 	);
