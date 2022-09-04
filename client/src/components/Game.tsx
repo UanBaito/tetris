@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { KeyboardEvent, SyntheticEvent, useEffect, useState } from 'react';
 import { tetromino } from '../interfaces';
 import GameBox from './GameBox';
 export default function Game() {
@@ -150,14 +150,33 @@ export default function Game() {
 		}
 	}, [internalClockState]);
 
+	function action(event: KeyboardEvent) {
+		if (gameState) {
+			switch (event.code) {
+				case 'ArrowDown':
+					event.preventDefault();
+					if (checkBelow()) {
+						dropOne();
+					}
+					break;
+				case 'ArrowLeft':
+				case 'ArrowRight':
+				case 'Space':
+					break;
+				default:
+					break; // do not block other keys
+			}
+		}
+	}
+
 	return (
-		<>
+		<div onKeyDown={action} tabIndex={-1}>
 			<button onClick={startTimer}>start timer</button>
 			<GameBox
 				tetrionState={tetrionState}
 				currentTetrominoState={currentTetrominoState}
 				getTetrominoPoints={getTetrominoPoints}
 			/>
-		</>
+		</div>
 	);
 }
