@@ -144,6 +144,21 @@ export default function Game() {
 		}));
 	}
 
+	function checkRight() {
+		const tetrionInfo = getTetrionStateInfo();
+		const tetronimoPoints = getTetrominoPoints();
+		for (const point of tetronimoPoints) {
+			const pointRight = [point[0] + 1, point[1]];
+			if (pointRight[0] > 8) {
+				return false;
+			} else if (tetrionInfo.includes([...pointRight, 1])) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+	}
+
 	function getTetrionStateInfo() {
 		const tetrionInfo: Array<Array<number>> = [];
 		tetrionState.forEach((row, rowIndex) => {
@@ -175,7 +190,9 @@ export default function Game() {
 				case 'ArrowLeft':
 				case 'ArrowRight':
 					event.preventDefault;
-					moveRight();
+					if (checkRight()) {
+						moveRight();
+					}
 					break;
 				case 'Space':
 					break;
