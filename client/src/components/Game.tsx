@@ -116,6 +116,13 @@ export default function Game() {
 		}));
 	}
 
+	useEffect(() => {
+		if (gameState) {
+			console.log(internalClockState);
+			dropOne();
+		}
+	}, [internalClockState]);
+
 	return (
 		<>
 			<button onClick={startTimer}>start timer</button>
