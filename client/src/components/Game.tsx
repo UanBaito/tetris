@@ -33,7 +33,6 @@ export default function Game() {
 					return prevState + 1000;
 				});
 			}, 1000);
-			console.log(internalClockState);
 		}
 	}, [gameState]);
 
@@ -93,15 +92,22 @@ export default function Game() {
 		const tetrionInfo = getTetrionStateInfo();
 		const tetrominoPoints = getTetrominoPoints();
 		for (const point of tetrominoPoints) {
-			const pointBelow = [point[0], point[1] + 1];
+			const pointBelow = [point[0], point[1] + 1, 1];
 			if (pointBelow[1] > 16) {
 				return false;
-			} else if (tetrionInfo.includes([...pointBelow, 1])) {
-				return false;
-			} else {
-				return true;
+			}
+
+			for (const square of tetrionInfo) {
+				if (
+					square[0] === pointBelow[0] &&
+					square[1] === pointBelow[1] &&
+					square[2] === pointBelow[2]
+				) {
+					return false;
+				}
 			}
 		}
+		return true;
 	}
 
 	function moveRight() {
@@ -121,15 +127,22 @@ export default function Game() {
 		const tetrionInfo = getTetrionStateInfo();
 		const tetrominoPoints = getTetrominoPoints();
 		for (const point of tetrominoPoints) {
-			const pointRight = [point[0] + 1, point[1]];
-			if (pointRight[0] > 8) {
+			const pointRight = [point[0] + 1, point[1], 1];
+			if (pointRight[0] > 9) {
 				return false;
-			} else if (tetrionInfo.includes([...pointRight, 1])) {
-				return false;
-			} else {
-				return true;
+			}
+
+			for (const square of tetrionInfo) {
+				if (
+					square[0] === pointRight[0] &&
+					square[1] === pointRight[1] &&
+					square[2] === pointRight[2]
+				) {
+					return false;
+				}
 			}
 		}
+		return true;
 	}
 
 	function moveLeft() {
@@ -154,11 +167,9 @@ export default function Game() {
 			for (const point of tetrominoPoints) {
 				const pointBelow = [point[0], point[1] + levels];
 				if (pointBelow[1] > 16) {
-					console.log('to bottom', levels);
 					drop(levels - axis);
 					return;
 				} else if (tetrionInfo.includes([...pointBelow, 1])) {
-					console.log('collision', levels);
 					drop(levels);
 					return;
 				} else {
@@ -172,22 +183,35 @@ export default function Game() {
 		const tetrionInfo = getTetrionStateInfo();
 		const tetrominoPoints = getTetrominoPoints();
 		for (const point of tetrominoPoints) {
-			const pointLeft = [point[0] - 1, point[1]];
-			if (pointLeft[0] < 1) {
+			const pointLeft = [point[0] - 1, point[1], 1];
+			if (pointLeft[0] < 0) {
 				return false;
-			} else if (tetrionInfo.includes([...pointLeft, 1])) {
-				return false;
-			} else {
-				return true;
+			}
+
+			for (const square of tetrionInfo) {
+				if (
+					square[0] === pointLeft[0] &&
+					square[1] === pointLeft[1] &&
+					square[2] === pointLeft[2]
+				) {
+					return false;
+				}
 			}
 		}
+		return true;
 	}
 
 	function getTetrionStateInfo() {
-		const tetrionInfo: Array<Array<number | JSX.Element>> = [];
+		const tetrionInfo: Array<Array<number>> = [];
 		tetrionState.forEach((row, rowIndex) => {
 			row.forEach((square, squareIndex) => {
-				const formattedSquare = [squareIndex, rowIndex, square];
+				let squareType;
+				if (square === 0) {
+					squareType = 0;
+				} else {
+					squareType = 1;
+				}
+				const formattedSquare = [squareIndex, rowIndex, squareType];
 				tetrionInfo.push(formattedSquare);
 			});
 		});
@@ -217,10 +241,6 @@ export default function Game() {
 	}
 
 	useEffect(() => {
-		console.log(tetrionState);
-	}, [tetrionState]);
-
-	useEffect(() => {
 		if (gameState) {
 			if (checkBelow()) {
 				drop(1);
@@ -237,6 +257,8 @@ export default function Game() {
 					event.preventDefault();
 					if (checkBelow()) {
 						drop(1);
+					} else {
+						place();
 					}
 					break;
 				case 'ArrowLeft':
