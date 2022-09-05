@@ -26,6 +26,24 @@ export class Tetromino {
 				[-1, 0],
 				[1, 0],
 				[-1, -1]
+			],
+			facingRightPoints: [
+				[0, 0],
+				[0, 1],
+				[0, -1],
+				[1, -1]
+			],
+			facingDownPoints: [
+				[0, 0],
+				[1, 0],
+				[-1, 0],
+				[1, 1]
+			],
+			facingLeftPoints: [
+				[0, 0],
+				[0, 1],
+				[0, -1],
+				[-1, 1]
 			]
 		}
 	};

@@ -215,6 +215,35 @@ export default function Game() {
 		}
 	}
 
+	function clockRotation(rotateTo: string) {
+		const nowFacing = currentTetrominoState.facing;
+		if (rotateTo === 'right') {
+			if (nowFacing === 3) {
+				setCurrentTetrominoState((prevState) => ({
+					...prevState,
+					facing: 0
+				}));
+			} else {
+				setCurrentTetrominoState((prevState) => ({
+					...prevState,
+					facing: prevState.facing + 1
+				}));
+			}
+		} else if (rotateTo === 'left') {
+			if (nowFacing === 0) {
+				setCurrentTetrominoState((prevState) => ({
+					...prevState,
+					facing: 3
+				}));
+			} else {
+				setCurrentTetrominoState((prevState) => ({
+					...prevState,
+					facing: prevState.facing - 1
+				}));
+			}
+		}
+	}
+
 	function getTetrionStateInfo() {
 		const tetrionInfo: Array<Array<number>> = [];
 		tetrionState.forEach((row, rowIndex) => {
@@ -296,7 +325,14 @@ export default function Game() {
 				case 'Space':
 					event.preventDefault;
 					hardDrop();
-					console.log(currentTetrominoState.coords.axis.y);
+					break;
+				case 'KeyZ':
+					event.preventDefault();
+					clockRotation('left');
+					break;
+				case 'KeyX':
+					event.preventDefault();
+					clockRotation('right');
 					break;
 				default:
 					break; // do not block other keys
