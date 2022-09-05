@@ -158,27 +158,6 @@ export default function Game() {
 		}));
 	}
 
-	function hardDrop() {
-		const tetrionInfo = getTetrionStateInfo();
-		const tetrominoPoints = getTetrominoPoints();
-		const axis = currentTetrominoState.coords.axis.y;
-		let levels = 0;
-		while (true) {
-			for (const point of tetrominoPoints) {
-				const pointBelow = [point[0], point[1] + levels];
-				if (pointBelow[1] > 16) {
-					drop(levels - axis);
-					return;
-				} else if (tetrionInfo.includes([...pointBelow, 1])) {
-					drop(levels);
-					return;
-				} else {
-					levels++;
-				}
-			}
-		}
-	}
-
 	function checkLeft() {
 		const tetrionInfo = getTetrionStateInfo();
 		const tetrominoPoints = getTetrominoPoints();
@@ -199,6 +178,41 @@ export default function Game() {
 			}
 		}
 		return true;
+	}
+
+	function hardDrop() {
+		const tetrionInfo = getTetrionStateInfo();
+		const tetrominoPoints = getTetrominoPoints();
+		let levels = 1;
+		while (true) {
+			for (const point of tetrominoPoints) {
+				const pointBelow = [point[0], point[1] + levels, 1];
+				if (pointBelow[1] > 16) {
+					drop(levels - 1);
+					setCurrentTetrominoState((prevState) => ({
+						...prevState,
+						moving: false
+					}));
+					return;
+				}
+
+				for (const square of tetrionInfo) {
+					if (
+						square[0] === pointBelow[0] &&
+						square[1] === pointBelow[1] &&
+						square[2] === pointBelow[2]
+					) {
+						drop(levels - 1);
+						setCurrentTetrominoState((prevState) => ({
+							...prevState,
+							moving: false
+						}));
+						return;
+					}
+				}
+			}
+			levels++;
+		}
 	}
 
 	function getTetrionStateInfo() {
@@ -250,6 +264,12 @@ export default function Game() {
 		}
 	}, [internalClockState]);
 
+	useEffect(() => {
+		if (!currentTetrominoState.moving) {
+			place();
+		}
+	}, [currentTetrominoState.moving]);
+
 	function action(event: KeyboardEvent) {
 		if (gameState) {
 			switch (event.code) {
@@ -276,6 +296,7 @@ export default function Game() {
 				case 'Space':
 					event.preventDefault;
 					hardDrop();
+					console.log(currentTetrominoState.coords.axis.y);
 					break;
 				default:
 					break; // do not block other keys
