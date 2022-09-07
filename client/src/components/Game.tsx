@@ -51,8 +51,7 @@ export default function Game() {
 		setgameState(true);
 	}
 
-	function getTetrominoPoints(): number[][] {
-		const axis = currentTetrominoState.coords.axis;
+	function getTetrominoPoints(axis: any): number[][] {
 		const rotation = currentTetrominoState.facing;
 		let relativePoints!: number[][];
 		switch (rotation) {
@@ -98,7 +97,9 @@ export default function Game() {
 
 	function checkBelow() {
 		const tetrionInfo = getTetrionStateInfo();
-		const tetrominoPoints = getTetrominoPoints();
+		const tetrominoPoints = getTetrominoPoints(
+			currentTetrominoState.coords.axis
+		);
 		for (const point of tetrominoPoints) {
 			const pointBelow = [point[0], point[1] + 1, 1];
 			if (pointBelow[1] > 16) {
@@ -133,7 +134,9 @@ export default function Game() {
 
 	function checkRight() {
 		const tetrionInfo = getTetrionStateInfo();
-		const tetrominoPoints = getTetrominoPoints();
+		const tetrominoPoints = getTetrominoPoints(
+			currentTetrominoState.coords.axis
+		);
 		for (const point of tetrominoPoints) {
 			const pointRight = [point[0] + 1, point[1], 1];
 			if (pointRight[0] > 9) {
@@ -168,7 +171,9 @@ export default function Game() {
 
 	function checkLeft() {
 		const tetrionInfo = getTetrionStateInfo();
-		const tetrominoPoints = getTetrominoPoints();
+		const tetrominoPoints = getTetrominoPoints(
+			currentTetrominoState.coords.axis
+		);
 		for (const point of tetrominoPoints) {
 			const pointLeft = [point[0] - 1, point[1], 1];
 			if (pointLeft[0] < 0) {
@@ -190,7 +195,9 @@ export default function Game() {
 
 	function hardDrop() {
 		const tetrionInfo = getTetrionStateInfo();
-		const tetrominoPoints = getTetrominoPoints();
+		const tetrominoPoints = getTetrominoPoints(
+			currentTetrominoState.coords.axis
+		);
 		let levels = 1;
 		while (true) {
 			for (const point of tetrominoPoints) {
@@ -226,16 +233,8 @@ export default function Game() {
 	function clockRotation(rotateTo: string) {
 		const nowFacing = currentTetrominoState.facing;
 		if (rotateTo === 'right') {
-			if (nowFacing === 3) {
-				setCurrentTetrominoState((prevState) => ({
-					...prevState,
-					facing: 0
-				}));
-			} else {
-				setCurrentTetrominoState((prevState) => ({
-					...prevState,
-					facing: prevState.facing + 1
-				}));
+			switch (nowFacing) {
+				case 0:
 			}
 		} else if (rotateTo === 'left') {
 			if (nowFacing === 0) {
@@ -249,6 +248,12 @@ export default function Game() {
 					facing: prevState.facing - 1
 				}));
 			}
+		}
+	}
+
+	function testWallKick(tests: Array<Array<number>>) {
+		const tetrionInfo = getTetrionStateInfo();
+		for (const test of tests) {
 		}
 	}
 
@@ -270,7 +275,9 @@ export default function Game() {
 	}
 
 	function place() {
-		const tetrominoPoints = getTetrominoPoints();
+		const tetrominoPoints = getTetrominoPoints(
+			currentTetrominoState.coords.axis
+		);
 		const updatedTetrion = tetrionState.map((row, rowIndex) => {
 			const newRow = row.map((square, squareIndex) => {
 				for (const point of tetrominoPoints) {

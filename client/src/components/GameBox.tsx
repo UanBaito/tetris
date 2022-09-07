@@ -8,12 +8,14 @@ export default function GameBox({
 }: {
 	tetrionState: Array<Array<number | JSX.Element>>;
 	currentTetrominoState: tetromino;
-	getTetrominoPoints: () => number[][];
+	getTetrominoPoints: (arg: any) => number[][];
 }) {
 	const MappedGame = tetrionState.map((Row, rowIndex) => {
 		const newRow = Row.map((square, squareIndex) => {
 			const SquareCoords = [squareIndex, rowIndex];
-			const tetronimoPoints = getTetrominoPoints();
+			const tetronimoPoints = getTetrominoPoints(
+				currentTetrominoState.coords.axis
+			);
 			for (const points of tetronimoPoints) {
 				if (squareIndex === points[0] && rowIndex === points[1]) {
 					return (
