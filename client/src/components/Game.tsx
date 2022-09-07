@@ -1,8 +1,16 @@
 import { KeyboardEvent, SyntheticEvent, useEffect, useState } from 'react';
 import { tetromino } from '../interfaces';
-import { Tetromino } from '../tetrominos';
+import { L, I } from '../tetrominos';
 import GameBox from './GameBox';
 import Square from './Square';
+
+const tetrominoes = [L, I];
+
+function getRandomTetromino() {
+	const newTetromino = tetrominoes[Math.floor(Math.random() * 2)];
+	return newTetromino;
+}
+
 export default function Game() {
 	/**
 	 * Creates an empty tetrion
@@ -18,7 +26,7 @@ export default function Game() {
 	 * This is the tetromino currently controlled by the player
 	 */
 	const [currentTetrominoState, setCurrentTetrominoState] = useState<tetromino>(
-		new Tetromino()
+		getRandomTetromino()
 	);
 
 	/**
@@ -280,7 +288,7 @@ export default function Game() {
 			return newRow;
 		});
 		setTetrionState(updatedTetrion);
-		setCurrentTetrominoState(new Tetromino());
+		setCurrentTetrominoState(getRandomTetromino());
 	}
 
 	useEffect(() => {
