@@ -1,13 +1,13 @@
 import { KeyboardEvent, SyntheticEvent, useEffect, useState } from 'react';
 import { tetromino } from '../interfaces';
-import { L, I } from '../tetrominos';
+import { L, I, O } from '../tetrominos';
 import GameBox from './GameBox';
 import Square from './Square';
 
-const tetrominoes = [L, I];
+const tetrominoes = [L, I, O];
 
 function getRandomTetromino() {
-	const newTetromino = tetrominoes[Math.floor(Math.random() * 2)];
+	const newTetromino = tetrominoes[Math.floor(Math.random() * 3)];
 	return newTetromino;
 }
 
@@ -51,8 +51,17 @@ export default function Game() {
 		setgameState(true);
 	}
 
-	function getTetrominoPoints(axis: any): number[][] {
-		const rotation = currentTetrominoState.facing;
+	function getTetrominoPoints(
+		axis: { x: number; y: number },
+		facing?: number
+	): number[][] {
+		let rotation;
+		if (facing !== undefined) {
+			rotation = facing;
+		} else {
+			rotation = currentTetrominoState.facing;
+		}
+
 		let relativePoints!: number[][];
 		switch (rotation) {
 			case 0:
@@ -193,36 +202,33 @@ export default function Game() {
 		return true;
 	}
 
-	function hardDrop() {
+	function getHardDropPreview() {
 		const tetrionInfo = getTetrionStateInfo();
 		const tetrominoPoints = getTetrominoPoints(
 			currentTetrominoState.coords.axis
 		);
+		const axis = currentTetrominoState.coords.axis;
 		let levels = 1;
+		let preview = { levels: 0, previewPoints: Array() };
 		while (true) {
 			for (const point of tetrominoPoints) {
 				const pointBelow = [point[0], point[1] + levels, 1];
 				if (pointBelow[1] > 16) {
-					drop(levels - 1);
-					setCurrentTetrominoState((prevState) => ({
-						...prevState,
-						moving: false
-					}));
-					return;
+					const previewAxis = { x: axis.x, y: axis.y + (levels - 1) };
+					preview.levels = levels;
+					preview.previewPoints = getTetrominoPoints(previewAxis);
+					return preview;
 				}
-
 				for (const square of tetrionInfo) {
 					if (
 						square[0] === pointBelow[0] &&
 						square[1] === pointBelow[1] &&
 						square[2] === pointBelow[2]
 					) {
-						drop(levels - 1);
-						setCurrentTetrominoState((prevState) => ({
-							...prevState,
-							moving: false
-						}));
-						return;
+						const previewAxis = { x: axis.x, y: axis.y + (levels - 1) };
+						preview.levels = levels;
+						preview.previewPoints = getTetrominoPoints(previewAxis);
+						return preview;
 					}
 				}
 			}
@@ -230,31 +236,321 @@ export default function Game() {
 		}
 	}
 
+	function hardDrop() {
+		const levels = getHardDropPreview().levels;
+		drop(levels - 1);
+		setCurrentTetrominoState((prevState) => ({
+			...prevState,
+			moving: false
+		}));
+	}
+
 	function clockRotation(rotateTo: string) {
 		const nowFacing = currentTetrominoState.facing;
+		let newFacing!: number;
+		let result: Array<number> | undefined;
+		if (currentTetrominoState.shape === 'I') {
+			if (rotateTo === 'right') {
+				switch (nowFacing) {
+					case 0:
+						newFacing = 1;
+						result = testWallKick(
+							[
+								[0, 0],
+								[-2, 0],
+								[1, 0],
+								[-2, 1],
+								[1, -2]
+							],
+							newFacing
+						);
+						break;
+
+					case 1:
+						newFacing = 2;
+						result = testWallKick(
+							[
+								[0, 0],
+								[-1, 0],
+								[2, 0],
+								[-1, -2],
+								[2, 1]
+							],
+							newFacing
+						);
+						break;
+
+					case 2:
+						newFacing = 3;
+						result = testWallKick(
+							[
+								[0, 0],
+								[2, 0],
+								[-1, 0],
+								[2, -1],
+								[-1, 2]
+							],
+							newFacing
+						);
+						break;
+					case 3:
+						newFacing = 0;
+						result = testWallKick(
+							[
+								[0, 0],
+								[1, 0],
+								[-2, 0],
+								[1, 2],
+								[-2, -1]
+							],
+							newFacing
+						);
+						break;
+				}
+				if (result) {
+					rotate(newFacing, result[0], result[1]);
+				}
+			} else if (rotateTo === 'left') {
+				switch (nowFacing) {
+					case 0:
+						newFacing = 3;
+						result = testWallKick(
+							[
+								[0, 0],
+								[-1, 0],
+								[2, 0],
+								[-1, -2],
+								[2, 1]
+							],
+							newFacing
+						);
+						break;
+
+					case 1:
+						newFacing = 0;
+						result = testWallKick(
+							[
+								[0, 0],
+								[2, 0],
+								[-1, 0],
+								[2, -1],
+								[-1, 2]
+							],
+							newFacing
+						);
+						break;
+
+					case 2:
+						newFacing = 1;
+						result = testWallKick(
+							[
+								[0, 0],
+								[1, 0],
+								[-2, 0],
+								[1, 2],
+								[-2, -1]
+							],
+							newFacing
+						);
+						break;
+					case 3:
+						newFacing = 2;
+						result = testWallKick(
+							[
+								[0, 0],
+								[-2, 0],
+								[1, 0],
+								[-2, 1],
+								[1, -2]
+							],
+							newFacing
+						);
+						break;
+				}
+				if (result) {
+					rotate(newFacing, result[0], result[1]);
+				}
+			}
+			return;
+		}
 		if (rotateTo === 'right') {
 			switch (nowFacing) {
 				case 0:
+					newFacing = 1;
+					result = testWallKick(
+						[
+							[0, 0],
+							[-1, 0],
+							[-1, -1],
+							[0, 2],
+							[-1, 2]
+						],
+						newFacing
+					);
+					break;
+
+				case 1:
+					newFacing = 2;
+					result = testWallKick(
+						[
+							[0, 0],
+							[1, 0],
+							[1, 1],
+							[0, -2],
+							[1, -2]
+						],
+						newFacing
+					);
+					break;
+
+				case 2:
+					newFacing = 3;
+					result = testWallKick(
+						[
+							[0, 0],
+							[1, 0],
+							[1, -1],
+							[0, 2],
+							[1, 2]
+						],
+						newFacing
+					);
+					break;
+				case 3:
+					newFacing = 0;
+					result = testWallKick(
+						[
+							[0, 0],
+							[-1, 0],
+							[-1, 1],
+							[0, -2],
+							[-1, -2]
+						],
+						newFacing
+					);
+					break;
+			}
+			if (result) {
+				rotate(newFacing, result[0], result[1]);
 			}
 		} else if (rotateTo === 'left') {
-			if (nowFacing === 0) {
-				setCurrentTetrominoState((prevState) => ({
-					...prevState,
-					facing: 3
-				}));
+			switch (nowFacing) {
+				case 0:
+					newFacing = 3;
+					result = testWallKick(
+						[
+							[0, 0],
+							[1, 0],
+							[1, -1],
+							[0, 2],
+							[1, 2]
+						],
+						newFacing
+					);
+					break;
+
+				case 1:
+					newFacing = 0;
+					result = testWallKick(
+						[
+							[0, 0],
+							[1, 0],
+							[1, 1],
+							[0, -2],
+							[1, -2]
+						],
+						newFacing
+					);
+					break;
+
+				case 2:
+					newFacing = 1;
+					result = testWallKick(
+						[
+							[0, 0],
+							[-1, 0],
+							[-1, -1],
+							[0, 2],
+							[-1, 2]
+						],
+						newFacing
+					);
+					break;
+				case 3:
+					newFacing = 2;
+					result = testWallKick(
+						[
+							[0, 0],
+							[-1, 0],
+							[-1, 1],
+							[0, -2],
+							[-1, -2]
+						],
+						newFacing
+					);
+					break;
+			}
+			if (result) {
+				rotate(newFacing, result[0], result[1]);
 			} else {
-				setCurrentTetrominoState((prevState) => ({
-					...prevState,
-					facing: prevState.facing - 1
-				}));
 			}
 		}
 	}
 
-	function testWallKick(tests: Array<Array<number>>) {
+	function rotate(newFacing: number, xShift: number, yShift: number) {
+		setCurrentTetrominoState((prevState) => ({
+			...prevState,
+			facing: newFacing,
+			coords: {
+				...prevState.coords,
+				axis: {
+					x: prevState.coords.axis.x + xShift,
+					y: prevState.coords.axis.y + yShift
+				}
+			}
+		}));
+	}
+
+	function testWallKick(tests: Array<Array<number>>, newFacing: number) {
 		const tetrionInfo = getTetrionStateInfo();
+		const axis = currentTetrominoState.coords.axis;
 		for (const test of tests) {
+			console.log('test', test);
+			let isAvailable = true;
+			const testAxis = { x: axis.x + test[0], y: axis.y + test[1] };
+			const testTetrominoPoints = getTetrominoPoints(testAxis, newFacing);
+
+			for (const point of testTetrominoPoints) {
+				const testPoint = [...point, 1];
+				console.log(testPoint);
+				if (
+					testPoint[0] < 0 ||
+					testPoint[0] > 9 ||
+					testPoint[1] < 0 ||
+					testPoint[1] > 16
+				) {
+					console.log('out of bounds');
+					isAvailable = false;
+					break;
+				}
+				for (const square of tetrionInfo) {
+					if (
+						square[0] === testPoint[0] &&
+						square[1] === testPoint[1] &&
+						square[2] === testPoint[2]
+					) {
+						isAvailable = false;
+						console.log('occupied');
+					}
+				}
+			}
+
+			if (isAvailable) {
+				console.log('rotating');
+				return test;
+			}
 		}
+		console.log('rotation failed');
 	}
 
 	function getTetrionStateInfo() {
@@ -362,6 +658,7 @@ export default function Game() {
 				tetrionState={tetrionState}
 				currentTetrominoState={currentTetrominoState}
 				getTetrominoPoints={getTetrominoPoints}
+				getHardDropPreview={getHardDropPreview}
 			/>
 		</div>
 	);

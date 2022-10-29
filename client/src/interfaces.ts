@@ -1,7 +1,10 @@
 export interface tetromino {
 	shape: string;
 	color: string;
-	facing: number; ///Current rotation, 0 = up, 1 = right, 2 = down, 3 = left.
+	/**
+	 * Current rotation, 0 = up, 1 = right, 2 = down, 3 = left.
+	 */
+	facing: number;
 	moving: boolean;
 	coords: {
 		/**
@@ -14,11 +17,11 @@ export interface tetromino {
 			y: number;
 		};
 		/**
+		 * (x, y)
 		 * The shapeCoords property tells where the squares around the axis are
 		 * depending on the rotation, describing the shape of the tetromino
 		 */
 		shapeCoords: {
-			///(x, y)
 			facingUpPoints: Array<Array<number>>;
 			facingRightPoints?: Array<Array<number>>;
 			facingDownPoints?: Array<Array<number>>;

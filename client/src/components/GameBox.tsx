@@ -4,18 +4,24 @@ import Square from './Square';
 export default function GameBox({
 	tetrionState,
 	currentTetrominoState,
-	getTetrominoPoints
+	getTetrominoPoints,
+	getHardDropPreview
 }: {
 	tetrionState: Array<Array<number | JSX.Element>>;
 	currentTetrominoState: tetromino;
-	getTetrominoPoints: (arg: any) => number[][];
+	getTetrominoPoints: (
+		axis: { x: number; y: number },
+		facing?: number
+	) => number[][];
+	getHardDropPreview: () => {
+		levels: number;
+		previewPoints: number[][];
+	};
 }) {
+	const tetronimoPoints = getTetrominoPoints(currentTetrominoState.coords.axis);
+	const previewPoints = getHardDropPreview().previewPoints;
 	const MappedGame = tetrionState.map((Row, rowIndex) => {
 		const newRow = Row.map((square, squareIndex) => {
-			const SquareCoords = [squareIndex, rowIndex];
-			const tetronimoPoints = getTetrominoPoints(
-				currentTetrominoState.coords.axis
-			);
 			for (const points of tetronimoPoints) {
 				if (squareIndex === points[0] && rowIndex === points[1]) {
 					return (
@@ -27,6 +33,16 @@ export default function GameBox({
 				}
 			}
 
+			for (const previewPoint of previewPoints) {
+				if (squareIndex === previewPoint[0] && rowIndex === previewPoint[1]) {
+					return (
+						<div
+							key={`${rowIndex}-${squareIndex}`}
+							className={`square square-preview`}
+						></div>
+					);
+				}
+			}
 			if (square !== 0) {
 				return square;
 			}
