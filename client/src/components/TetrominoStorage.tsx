@@ -11,12 +11,12 @@ type props = {
 };
 
 export default function TetrominoStorage({ getTetrominoPoints }: props) {
-	const storageContainer: number[][] = Array(5).fill(Array(5).fill(0));
+	const storageContainer: number[][] = Array(2).fill(Array(5).fill(0));
 	console.log(storageContainer);
 	const storedTetromino = L;
 	console.log(storedTetromino);
 
-	const tetrominoPoints = getTetrominoPoints({ x: 2, y: 2 }, 0, L);
+	const tetrominoPoints = getTetrominoPoints({ x: 2, y: 1 }, 0, L);
 	console.log(tetrominoPoints);
 	const mappedStorageContainer = storageContainer.map((row, rowIndex) => {
 		const mappedRow = row.map((square, squareIndex) => {
