@@ -1,5 +1,5 @@
 import { KeyboardEvent, SyntheticEvent, useEffect, useState } from 'react';
-import { tetromino } from '../interfaces';
+import { storedTetromino, tetromino } from '../interfaces';
 import { L, I, O, iOffsetData, jlstzOffsetData } from '../tetrominos';
 import GameBox from './GameBox';
 import Square from './Square';
@@ -22,6 +22,11 @@ export default function Game() {
 
 	const [internalClockState, setInternalClockState] = useState(0); // Time in milliseconds since the game started
 	const [gameState, setgameState] = useState(false); // When set to true, starts the game
+	const [storedTetrominoState, setstoredTetrominoState] =
+		useState<storedTetromino>({
+			canSwap: true,
+			tetromino: null
+		});
 
 	/**
 	 * This is the tetromino currently controlled by the player
@@ -50,6 +55,34 @@ export default function Game() {
 	 */
 	function startTimer() {
 		setgameState(true);
+	}
+
+	function storeTetromino(tetromino: tetromino) {
+		let staticTetromino: tetromino | null;
+		if (storedTetrominoState.tetromino === null) {
+			staticTetromino = getTetromino(tetromino.shape);
+			setstoredTetrominoState((prevState) => ({
+				...prevState,
+				tetromino: staticTetromino
+			}));
+			setCurrentTetrominoState(getRandomTetromino());
+		} else {
+			setCurrentTetrominoState(storedTetrominoState.tetromino);
+			staticTetromino = getTetromino(tetromino.shape);
+			setstoredTetrominoState((prevState) => ({
+				...prevState,
+				tetromino: staticTetromino
+			}));
+		}
+	}
+
+	function getTetromino(shape: string) {
+		const tetromino = tetrominoes.find((v) => v.shape === shape);
+		if (tetromino) {
+			return tetromino;
+		} else {
+			return null;
+		}
 	}
 
 	function getTetrominoPoints(
@@ -432,6 +465,10 @@ export default function Game() {
 					event.preventDefault();
 					clockRotation('right');
 					break;
+				case 'KeyC':
+					event.preventDefault();
+					storeTetromino(currentTetrominoState);
+					break;
 				default:
 					break; // do not block other keys
 			}
@@ -447,7 +484,11 @@ export default function Game() {
 				getTetrominoPoints={getTetrominoPoints}
 				getHardDropPreview={getHardDropPreview}
 			/>
-			<TetrominoStorage getTetrominoPoints={getTetrominoPoints} />
+			<TetrominoStorage
+				getTetrominoPoints={getTetrominoPoints}
+				tetromino={storedTetrominoState.tetromino}
+				getTetromino={getTetromino}
+			/>
 		</div>
 	);
 }

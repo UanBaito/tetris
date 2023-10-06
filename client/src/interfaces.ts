@@ -29,3 +29,8 @@ export interface tetromino {
 		};
 	};
 }
+
+export interface storedTetromino {
+	canSwap: boolean;
+	tetromino: tetromino | null;
+}
