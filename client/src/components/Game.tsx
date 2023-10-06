@@ -54,7 +54,8 @@ export default function Game() {
 
 	function getTetrominoPoints(
 		axis: { x: number; y: number },
-		facing?: number
+		facing?: number,
+		tetromino?: tetromino
 	): number[][] {
 		let rotation;
 		if (facing !== undefined) {
@@ -62,24 +63,26 @@ export default function Game() {
 		} else {
 			rotation = currentTetrominoState.facing;
 		}
+		let tetrominoToUse;
+		if (tetromino) {
+			tetrominoToUse = tetromino;
+		} else {
+			tetrominoToUse = currentTetrominoState;
+		}
 
 		let relativePoints!: number[][];
 		switch (rotation) {
 			case 0:
-				relativePoints =
-					currentTetrominoState.coords.shapeCoords.facingUpPoints;
+				relativePoints = tetrominoToUse.coords.shapeCoords.facingUpPoints;
 				break;
 			case 1:
-				relativePoints =
-					currentTetrominoState.coords.shapeCoords.facingRightPoints!;
+				relativePoints = tetrominoToUse.coords.shapeCoords.facingRightPoints!;
 				break;
 			case 2:
-				relativePoints =
-					currentTetrominoState.coords.shapeCoords.facingDownPoints!;
+				relativePoints = tetrominoToUse.coords.shapeCoords.facingDownPoints!;
 				break;
 			case 3:
-				relativePoints =
-					currentTetrominoState.coords.shapeCoords.facingLeftPoints!;
+				relativePoints = tetrominoToUse.coords.shapeCoords.facingLeftPoints!;
 				break;
 		}
 		const TetrominoPoints = relativePoints.map((point) => {
@@ -444,7 +447,7 @@ export default function Game() {
 				getTetrominoPoints={getTetrominoPoints}
 				getHardDropPreview={getHardDropPreview}
 			/>
-			<TetrominoStorage />
+			<TetrominoStorage getTetrominoPoints={getTetrominoPoints} />
 		</div>
 	);
 }
