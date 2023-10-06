@@ -58,21 +58,23 @@ export default function Game() {
 	}
 
 	function storeTetromino(tetromino: tetromino) {
-		let staticTetromino: tetromino | null;
-		if (storedTetrominoState.tetromino === null) {
-			staticTetromino = getTetromino(tetromino.shape);
-			setstoredTetrominoState((prevState) => ({
-				...prevState,
-				tetromino: staticTetromino
-			}));
-			setCurrentTetrominoState(getRandomTetromino());
-		} else {
-			setCurrentTetrominoState(storedTetrominoState.tetromino);
-			staticTetromino = getTetromino(tetromino.shape);
-			setstoredTetrominoState((prevState) => ({
-				...prevState,
-				tetromino: staticTetromino
-			}));
+		if (storedTetrominoState.canSwap) {
+			let staticTetromino: tetromino | null;
+			if (storedTetrominoState.tetromino === null) {
+				staticTetromino = getTetromino(tetromino.shape);
+				setstoredTetrominoState({
+					canSwap: false,
+					tetromino: staticTetromino
+				});
+				setCurrentTetrominoState(getRandomTetromino());
+			} else {
+				setCurrentTetrominoState(storedTetrominoState.tetromino);
+				staticTetromino = getTetromino(tetromino.shape);
+				setstoredTetrominoState({
+					canSwap: false,
+					tetromino: staticTetromino
+				});
+			}
 		}
 	}
 
@@ -411,6 +413,7 @@ export default function Game() {
 			return newRow;
 		});
 		setTetrionState(updatedTetrion);
+		setstoredTetrominoState((prevState) => ({ ...prevState, canSwap: true }));
 		setCurrentTetrominoState(getRandomTetromino());
 	}
 
