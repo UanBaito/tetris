@@ -9,6 +9,11 @@ body {
 	background-color: #30353e;
 }
 
+.game {
+	display: flex;
+	gap: 2rem;
+}
+
 .square {
 	width: 30px;
 	height: 30px;
@@ -33,4 +38,26 @@ body {
 	border: 15px solid rgba(255, 255, 255, 0.267);
 	border-radius: 10px;
 	grid-template-columns: 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px;
+}
+
+.start-button {
+	font-size: 1.3rem;
+	width: 8rem;
+	height: 3rem;
+	text-wrap: nowrap;
+	padding: 0;
+	font-weight: 700;
+	text-transform: capitalize;
+	padding: 0.2em;
+}
+
+.tetromino-storage {
+	background-color: black;
+	display: grid;
+	grid-template-columns: repeat(5, 30px);
+	grid-template-rows: repeat(2, 30px);
+	width: max-content;
+	height: max-content;
+	border: 15px solid #676b72;
+	border-radius: 10px;
 }

@@ -1,8 +1,9 @@
 import { KeyboardEvent, SyntheticEvent, useEffect, useState } from 'react';
-import { tetromino } from '../interfaces';
+import { storedTetromino, tetromino } from '../interfaces';
 import { L, I, O, iOffsetData, jlstzOffsetData } from '../tetrominos';
 import GameBox from './GameBox';
 import Square from './Square';
+import TetrominoStorage from './TetrominoStorage';
 
 const tetrominoes = [L, I, O];
 
@@ -21,6 +22,11 @@ export default function Game() {
 
 	const [internalClockState, setInternalClockState] = useState(0); // Time in milliseconds since the game started
 	const [gameState, setgameState] = useState(false); // When set to true, starts the game
+	const [storedTetrominoState, setstoredTetrominoState] =
+		useState<storedTetromino>({
+			canSwap: true,
+			tetromino: null
+		});
 
 	/**
 	 * This is the tetromino currently controlled by the player
@@ -51,9 +57,40 @@ export default function Game() {
 		setgameState(true);
 	}
 
+	function storeTetromino(tetromino: tetromino) {
+		if (storedTetrominoState.canSwap) {
+			let staticTetromino: tetromino | null;
+			if (storedTetrominoState.tetromino === null) {
+				staticTetromino = getTetromino(tetromino.shape);
+				setstoredTetrominoState({
+					canSwap: false,
+					tetromino: staticTetromino
+				});
+				setCurrentTetrominoState(getRandomTetromino());
+			} else {
+				setCurrentTetrominoState(storedTetrominoState.tetromino);
+				staticTetromino = getTetromino(tetromino.shape);
+				setstoredTetrominoState({
+					canSwap: false,
+					tetromino: staticTetromino
+				});
+			}
+		}
+	}
+
+	function getTetromino(shape: string) {
+		const tetromino = tetrominoes.find((v) => v.shape === shape);
+		if (tetromino) {
+			return tetromino;
+		} else {
+			return null;
+		}
+	}
+
 	function getTetrominoPoints(
 		axis: { x: number; y: number },
-		facing?: number
+		facing?: number,
+		tetromino?: tetromino
 	): number[][] {
 		let rotation;
 		if (facing !== undefined) {
@@ -61,24 +98,26 @@ export default function Game() {
 		} else {
 			rotation = currentTetrominoState.facing;
 		}
+		let tetrominoToUse;
+		if (tetromino) {
+			tetrominoToUse = tetromino;
+		} else {
+			tetrominoToUse = currentTetrominoState;
+		}
 
 		let relativePoints!: number[][];
 		switch (rotation) {
 			case 0:
-				relativePoints =
-					currentTetrominoState.coords.shapeCoords.facingUpPoints;
+				relativePoints = tetrominoToUse.coords.shapeCoords.facingUpPoints;
 				break;
 			case 1:
-				relativePoints =
-					currentTetrominoState.coords.shapeCoords.facingRightPoints!;
+				relativePoints = tetrominoToUse.coords.shapeCoords.facingRightPoints!;
 				break;
 			case 2:
-				relativePoints =
-					currentTetrominoState.coords.shapeCoords.facingDownPoints!;
+				relativePoints = tetrominoToUse.coords.shapeCoords.facingDownPoints!;
 				break;
 			case 3:
-				relativePoints =
-					currentTetrominoState.coords.shapeCoords.facingLeftPoints!;
+				relativePoints = tetrominoToUse.coords.shapeCoords.facingLeftPoints!;
 				break;
 		}
 		const TetrominoPoints = relativePoints.map((point) => {
@@ -374,6 +413,7 @@ export default function Game() {
 			return newRow;
 		});
 		setTetrionState(updatedTetrion);
+		setstoredTetrominoState((prevState) => ({ ...prevState, canSwap: true }));
 		setCurrentTetrominoState(getRandomTetromino());
 	}
 
@@ -428,6 +468,10 @@ export default function Game() {
 					event.preventDefault();
 					clockRotation('right');
 					break;
+				case 'KeyC':
+					event.preventDefault();
+					storeTetromino(currentTetrominoState);
+					break;
 				default:
 					break; // do not block other keys
 			}
@@ -435,14 +479,21 @@ export default function Game() {
 	}
 
 	return (
-		<div onKeyDown={action} tabIndex={-1}>
-			<button onClick={startTimer}>start timer</button>
+		<div onKeyDown={action} tabIndex={-1} className="game">
+			<TetrominoStorage
+				getTetrominoPoints={getTetrominoPoints}
+				tetromino={storedTetrominoState.tetromino}
+				getTetromino={getTetromino}
+			/>
 			<GameBox
 				tetrionState={tetrionState}
 				currentTetrominoState={currentTetrominoState}
 				getTetrominoPoints={getTetrominoPoints}
 				getHardDropPreview={getHardDropPreview}
 			/>
+			<button onClick={startTimer} className="start-button">
+				start timer
+			</button>
 		</div>
 	);
 }

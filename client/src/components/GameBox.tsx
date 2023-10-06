@@ -11,7 +11,8 @@ export default function GameBox({
 	currentTetrominoState: tetromino;
 	getTetrominoPoints: (
 		axis: { x: number; y: number },
-		facing?: number
+		facing?: number,
+		tetromino?: tetromino
 	) => number[][];
 	getHardDropPreview: () => {
 		levels: number;
