@@ -1,7 +1,7 @@
 import Square from './Square';
 
 export default function TetrominoStorage() {
-	const storageContainer = Array(9).fill(Array(9).fill(0));
+	const storageContainer = Array(5).fill(Array(5).fill(0));
 	console.log(storageContainer);
 
 	const mappedStorageContainer = storageContainer.map((row, rowIndex) => {

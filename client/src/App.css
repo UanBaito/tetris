@@ -38,6 +38,6 @@ body {
 .tetromino-storage {
 	background-color: black;
 	display: grid;
-	grid-template-columns: repeat(9, 30px);
+	grid-template-columns: repeat(5, 30px);
 	width: max-content;
 }
