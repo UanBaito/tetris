@@ -479,19 +479,21 @@ export default function Game() {
 	}
 
 	return (
-		<div onKeyDown={action} tabIndex={-1}>
-			<button onClick={startTimer}>start timer</button>
+		<div onKeyDown={action} tabIndex={-1} className="game">
+			<TetrominoStorage
+				getTetrominoPoints={getTetrominoPoints}
+				tetromino={storedTetrominoState.tetromino}
+				getTetromino={getTetromino}
+			/>
 			<GameBox
 				tetrionState={tetrionState}
 				currentTetrominoState={currentTetrominoState}
 				getTetrominoPoints={getTetrominoPoints}
 				getHardDropPreview={getHardDropPreview}
 			/>
-			<TetrominoStorage
-				getTetrominoPoints={getTetrominoPoints}
-				tetromino={storedTetrominoState.tetromino}
-				getTetromino={getTetromino}
-			/>
+			<button onClick={startTimer} className="start-button">
+				start timer
+			</button>
 		</div>
 	);
 }

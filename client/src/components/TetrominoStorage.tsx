@@ -33,26 +33,24 @@ export default function TetrominoStorage({
 			);
 			console.log(tetrominoPoints);
 		}
-	} else {
-		return <></>;
 	}
 
 	const mappedStorageContainer = storageContainer.map((row, rowIndex) => {
 		const mappedRow = row.map((square, squareIndex) => {
+			if (!storedTetromino) {
+				return <div className="square"></div>;
+			}
 			for (const points of tetrominoPoints) {
-				if (!storedTetromino) {
-					return <Square color="gray" key={`${rowIndex}-${squareIndex}`} />;
-				}
 				if (squareIndex === points[0] && rowIndex === points[1]) {
 					return (
 						<Square
-							key={`${rowIndex}-${squareIndex}`}
+							key={`${rowIndex}-${squareIndex}-storage`}
 							color={storedTetromino.color}
 						/>
 					);
 				}
 			}
-			return <Square color="gray" key={`${rowIndex}-${squareIndex}`} />;
+			return <Square color="black" key={`${rowIndex}-${squareIndex}storage`} />;
 		});
 		return mappedRow;
 	});
