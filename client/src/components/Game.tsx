@@ -1,15 +1,12 @@
 import { KeyboardEvent, SyntheticEvent, useEffect, useState } from 'react';
 import { storedTetromino, tetromino } from '../interfaces';
-import { L, I, O, iOffsetData, jlstzOffsetData } from '../tetrominos';
+import { iOffsetData, jlstzOffsetData, tetrominoes } from '../tetrominos';
 import GameBox from './GameBox';
 import Square from './Square';
 import TetrominoStorage from './TetrominoStorage';
 
-const tetrominoes = [L, I, O];
-
 function getRandomTetromino() {
-	const newTetromino = tetrominoes[Math.floor(Math.random() * 3)];
-	return newTetromino;
+	return tetrominoes[Math.floor(Math.random() * 7)];
 }
 
 export default function Game() {
