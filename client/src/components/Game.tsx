@@ -1,6 +1,6 @@
 import { KeyboardEvent, SyntheticEvent, useEffect, useState } from 'react';
 import { tetromino } from '../interfaces';
-import { L, I, O } from '../tetrominos';
+import { L, I, O, iOffsetData, jlstzOffsetData } from '../tetrominos';
 import GameBox from './GameBox';
 import Square from './Square';
 
@@ -249,251 +249,34 @@ export default function Game() {
 		const nowFacing = currentTetrominoState.facing;
 		let newFacing!: number;
 		let result: Array<number> | undefined;
+		let offsetData: number[][][];
+		let derivedOffsetData: number[][];
+
 		if (currentTetrominoState.shape === 'I') {
-			if (rotateTo === 'right') {
-				switch (nowFacing) {
-					case 0:
-						newFacing = 1;
-						result = testWallKick(
-							[
-								[0, 0],
-								[-2, 0],
-								[1, 0],
-								[-2, 1],
-								[1, -2]
-							],
-							newFacing
-						);
-						break;
-
-					case 1:
-						newFacing = 2;
-						result = testWallKick(
-							[
-								[0, 0],
-								[-1, 0],
-								[2, 0],
-								[-1, -2],
-								[2, 1]
-							],
-							newFacing
-						);
-						break;
-
-					case 2:
-						newFacing = 3;
-						result = testWallKick(
-							[
-								[0, 0],
-								[2, 0],
-								[-1, 0],
-								[2, -1],
-								[-1, 2]
-							],
-							newFacing
-						);
-						break;
-					case 3:
-						newFacing = 0;
-						result = testWallKick(
-							[
-								[0, 0],
-								[1, 0],
-								[-2, 0],
-								[1, 2],
-								[-2, -1]
-							],
-							newFacing
-						);
-						break;
-				}
-				if (result) {
-					rotate(newFacing, result[0], result[1]);
-				}
-			} else if (rotateTo === 'left') {
-				switch (nowFacing) {
-					case 0:
-						newFacing = 3;
-						result = testWallKick(
-							[
-								[0, 0],
-								[-1, 0],
-								[2, 0],
-								[-1, -2],
-								[2, 1]
-							],
-							newFacing
-						);
-						break;
-
-					case 1:
-						newFacing = 0;
-						result = testWallKick(
-							[
-								[0, 0],
-								[2, 0],
-								[-1, 0],
-								[2, -1],
-								[-1, 2]
-							],
-							newFacing
-						);
-						break;
-
-					case 2:
-						newFacing = 1;
-						result = testWallKick(
-							[
-								[0, 0],
-								[1, 0],
-								[-2, 0],
-								[1, 2],
-								[-2, -1]
-							],
-							newFacing
-						);
-						break;
-					case 3:
-						newFacing = 2;
-						result = testWallKick(
-							[
-								[0, 0],
-								[-2, 0],
-								[1, 0],
-								[-2, 1],
-								[1, -2]
-							],
-							newFacing
-						);
-						break;
-				}
-				if (result) {
-					rotate(newFacing, result[0], result[1]);
-				}
-			}
-			return;
+			offsetData = iOffsetData;
+		} else {
+			offsetData = jlstzOffsetData;
 		}
+
+		// This creates a cycle between 0 and 3
 		if (rotateTo === 'right') {
-			switch (nowFacing) {
-				case 0:
-					newFacing = 1;
-					result = testWallKick(
-						[
-							[0, 0],
-							[-1, 0],
-							[-1, -1],
-							[0, 2],
-							[-1, 2]
-						],
-						newFacing
-					);
-					break;
+			newFacing = nowFacing === 3 ? 0 : nowFacing + 1;
+		} else {
+			newFacing = nowFacing === 0 ? 3 : nowFacing - 1;
+		}
 
-				case 1:
-					newFacing = 2;
-					result = testWallKick(
-						[
-							[0, 0],
-							[1, 0],
-							[1, 1],
-							[0, -2],
-							[1, -2]
-						],
-						newFacing
-					);
-					break;
+		// We can derive the desired offset test data for the wall kick by substracting the offset values of the new
+		// facing direction from the offset values of the current facing direction (b and a, respectively)
+		const b = offsetData[newFacing];
+		derivedOffsetData = offsetData[nowFacing].map((a, i) => {
+			const offsetX = a[0] - b[i][0];
+			const offsety = a[1] - b[i][1];
+			return [offsetX, offsety];
+		});
 
-				case 2:
-					newFacing = 3;
-					result = testWallKick(
-						[
-							[0, 0],
-							[1, 0],
-							[1, -1],
-							[0, 2],
-							[1, 2]
-						],
-						newFacing
-					);
-					break;
-				case 3:
-					newFacing = 0;
-					result = testWallKick(
-						[
-							[0, 0],
-							[-1, 0],
-							[-1, 1],
-							[0, -2],
-							[-1, -2]
-						],
-						newFacing
-					);
-					break;
-			}
-			if (result) {
-				rotate(newFacing, result[0], result[1]);
-			}
-		} else if (rotateTo === 'left') {
-			switch (nowFacing) {
-				case 0:
-					newFacing = 3;
-					result = testWallKick(
-						[
-							[0, 0],
-							[1, 0],
-							[1, -1],
-							[0, 2],
-							[1, 2]
-						],
-						newFacing
-					);
-					break;
-
-				case 1:
-					newFacing = 0;
-					result = testWallKick(
-						[
-							[0, 0],
-							[1, 0],
-							[1, 1],
-							[0, -2],
-							[1, -2]
-						],
-						newFacing
-					);
-					break;
-
-				case 2:
-					newFacing = 1;
-					result = testWallKick(
-						[
-							[0, 0],
-							[-1, 0],
-							[-1, -1],
-							[0, 2],
-							[-1, 2]
-						],
-						newFacing
-					);
-					break;
-				case 3:
-					newFacing = 2;
-					result = testWallKick(
-						[
-							[0, 0],
-							[-1, 0],
-							[-1, 1],
-							[0, -2],
-							[-1, -2]
-						],
-						newFacing
-					);
-					break;
-			}
-			if (result) {
-				rotate(newFacing, result[0], result[1]);
-			} else {
-			}
+		result = testWallKick(derivedOffsetData, newFacing);
+		if (result) {
+			rotate(newFacing, result[0], result[1]);
 		}
 	}
 
