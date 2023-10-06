@@ -3,6 +3,7 @@ import { tetromino } from '../interfaces';
 import { L, I, O, iOffsetData, jlstzOffsetData } from '../tetrominos';
 import GameBox from './GameBox';
 import Square from './Square';
+import TetrominoStorage from './TetrominoStorage';
 
 const tetrominoes = [L, I, O];
 
@@ -443,6 +444,7 @@ export default function Game() {
 				getTetrominoPoints={getTetrominoPoints}
 				getHardDropPreview={getHardDropPreview}
 			/>
+			<TetrominoStorage />
 		</div>
 	);
 }
