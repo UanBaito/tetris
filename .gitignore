@@ -28,3 +28,4 @@ dist-ssr
 .firebase/hosting.ZGlzdA.cache
 .gitignore
 firebase.json
+client/.firebase/hosting.ZGlzdA.cache
