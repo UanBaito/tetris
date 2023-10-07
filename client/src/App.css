@@ -12,6 +12,7 @@ body {
 .game {
 	display: flex;
 	gap: 2rem;
+	position: relative;
 }
 
 .square {
@@ -60,4 +61,12 @@ body {
 	height: max-content;
 	border: 15px solid #676b72;
 	border-radius: 10px;
+}
+
+.gameover {
+	position: absolute;
+	top: -40px;
+	right: 50%;
+	color: white;
+	transform: translateX(75%);
 }

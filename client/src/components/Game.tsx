@@ -1,4 +1,10 @@
-import { KeyboardEvent, SyntheticEvent, useEffect, useState } from 'react';
+import {
+	KeyboardEvent,
+	SyntheticEvent,
+	useEffect,
+	useRef,
+	useState
+} from 'react';
 import { storedTetromino, tetromino } from '../interfaces';
 import { iOffsetData, jlstzOffsetData, tetrominoes } from '../tetrominos';
 import GameBox from './GameBox';
@@ -14,12 +20,15 @@ export default function Game() {
 	>(Array(22).fill(Array(10).fill(0)));
 
 	const [internalClockState, setInternalClockState] = useState(0); // Time in milliseconds since the game started
+	const intervalRef = useRef<number>();
+
 	const [gameState, setgameState] = useState(false); // When set to true, starts the game
 	const [storedTetrominoState, setstoredTetrominoState] =
 		useState<storedTetromino>({
 			canSwap: true,
 			tetromino: null
 		});
+	const [retryState, setRetryState] = useState(false);
 
 	/**
 	 * This is the tetromino currently controlled by the player
@@ -35,7 +44,7 @@ export default function Game() {
 	 */
 	useEffect(() => {
 		if (gameState) {
-			setInterval(() => {
+			intervalRef.current = setInterval(() => {
 				setInternalClockState((prevState) => {
 					return prevState + 1000;
 				});
@@ -46,7 +55,19 @@ export default function Game() {
 	/**
 	 * Starts the game
 	 */
-	function startTimer() {
+	function startGame() {
+		setgameState(true);
+	}
+
+	function retryGame() {
+		setTetrionState(Array(22).fill(Array(10).fill(0)));
+		setInternalClockState(0);
+		setstoredTetrominoState({
+			canSwap: true,
+			tetromino: null
+		});
+		setRetryState(false);
+		setCurrentTetrominoState(getRandomTetromino());
 		setgameState(true);
 	}
 
@@ -440,7 +461,8 @@ export default function Game() {
 
 		const splicedTetrion = checkFilledRows(updatedTetrion);
 		if (checkGameOver(splicedTetrion)) {
-			console.log('game over');
+			setRetryState(true);
+			clearInterval(intervalRef.current);
 			setgameState(false);
 		} else {
 			setTetrionState(splicedTetrion);
@@ -517,15 +539,30 @@ export default function Game() {
 				tetromino={storedTetrominoState.tetromino}
 				getTetromino={getTetromino}
 			/>
-			<GameBox
-				tetrionState={tetrionState}
-				currentTetrominoState={currentTetrominoState}
-				getTetrominoPoints={getTetrominoPoints}
-				getHardDropPreview={getHardDropPreview}
-			/>
-			<button onClick={startTimer} className="start-button">
-				start timer
-			</button>
+			<div>
+				{retryState && <h2 className="gameover">Game Over</h2>}
+				<GameBox
+					tetrionState={tetrionState}
+					currentTetrominoState={currentTetrominoState}
+					getTetrominoPoints={getTetrominoPoints}
+					getHardDropPreview={getHardDropPreview}
+				/>
+			</div>
+			{retryState ? (
+				<>
+					<button onClick={retryGame} className="start-button">
+						new game
+					</button>
+				</>
+			) : (
+				<button
+					onClick={startGame}
+					className="start-button"
+					disabled={gameState}
+				>
+					start
+				</button>
+			)}
 		</div>
 	);
 }
