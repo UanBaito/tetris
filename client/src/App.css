@@ -3,6 +3,7 @@
 	margin: 0 auto;
 	padding: 2rem;
 	text-align: center;
+	background-color: #30353e;
 }
 
 body {
@@ -69,4 +70,22 @@ body {
 	right: 50%;
 	color: white;
 	transform: translateX(75%);
+}
+
+.tetrominoesqueue-list {
+	display: flex;
+	flex-direction: column;
+
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.tetrominoesqueue-item {
+	background-color: black;
+	display: grid;
+	grid-template-columns: repeat(5, 30px);
+	grid-template-rows: repeat(2, 30px);
+	width: max-content;
+	height: max-content;
+	border: 2px solid white;
 }
