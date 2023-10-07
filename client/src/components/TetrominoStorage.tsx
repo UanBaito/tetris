@@ -23,7 +23,7 @@ export default function TetrominoStorage({
 
 	if (tetromino) {
 		storedTetromino = getTetromino(tetromino.shape);
-		console.log(storedTetromino);
+
 		if (storedTetromino) {
 			const yAxis = storedTetromino.shape === 'O' ? 0 : 1; /// fixes issue with storage only showing half of "O" tetromino
 			tetrominoPoints = getTetrominoPoints(
@@ -31,7 +31,6 @@ export default function TetrominoStorage({
 				0,
 				storedTetromino
 			);
-			console.log(tetrominoPoints);
 		}
 	}
 
