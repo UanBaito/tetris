@@ -238,8 +238,8 @@ export default function Game() {
 		return true;
 	}
 
-	function checkFilledRows(Tetrion: (number | JSX.Element)[][]) {
-		const filledRows = Tetrion.filter((row) => {
+	function checkFilledRows(tetrion: (number | JSX.Element)[][]) {
+		const filledRows = tetrion.filter((row) => {
 			const isRowFilled = row.every((square) => square !== 0);
 			if (isRowFilled) {
 				return true;
@@ -250,6 +250,23 @@ export default function Game() {
 		if (filledRows[0]) {
 			console.log('filled row');
 		}
+		return removeFilledRows(filledRows, tetrion);
+	}
+
+	function removeFilledRows(
+		filledRows: (number | JSX.Element)[][],
+		tetrion: (number | JSX.Element)[][]
+	) {
+		const indexes = filledRows.map((filledRow) => {
+			return tetrion.findIndex((tetrionRow) => filledRow === tetrionRow);
+		});
+
+		const updatedTetrion = [...tetrion];
+		indexes.forEach((index) => {
+			updatedTetrion.splice(index, 1);
+			updatedTetrion.unshift(Array(10).fill(0));
+		});
+		return updatedTetrion;
 	}
 
 	function getHardDropPreview() {
@@ -418,8 +435,8 @@ export default function Game() {
 			});
 			return newRow;
 		});
-		checkFilledRows(updatedTetrion);
-		setTetrionState(updatedTetrion);
+		const splicedTetrion = checkFilledRows(updatedTetrion);
+		setTetrionState(splicedTetrion);
 		setstoredTetrominoState((prevState) => ({ ...prevState, canSwap: true }));
 		setCurrentTetrominoState(getRandomTetromino());
 	}
