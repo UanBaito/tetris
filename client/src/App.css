@@ -24,6 +24,13 @@ header {
 	border-bottom: 1px solid gray;
 }
 
+header h2 {
+	font-size: 1rem;
+	line-height: 1rem;
+	margin: 0;
+	font-weight: 500;
+}
+
 h2 {
 	color: white;
 

@@ -612,8 +612,10 @@ export default function Game() {
 	return (
 		<>
 			<header>
-				Movement: Arrow keys / Rotate: Z, X / Hold: C / Hard drop: Space / Start
-				game: Enter
+				<h2>
+					Movement: Arrow keys / Rotate: Z, X / Hold: C / Hard drop: Space /
+					Start game: Enter
+				</h2>
 			</header>
 			<div onKeyDown={action} tabIndex={-1} className="game">
 				<div className="tetrominostorage-container">
