@@ -1,5 +1,5 @@
 import Square from './Square';
-import { L, I, O } from '../tetrominos';
+import { tetrominoes } from '../tetrominos';
 import { storedTetromino, tetromino } from '../interfaces';
 
 type props = {
@@ -38,7 +38,12 @@ export default function TetrominoStorage({
 	const mappedStorageContainer = storageContainer.map((row, rowIndex) => {
 		const mappedRow = row.map((square, squareIndex) => {
 			if (!storedTetromino) {
-				return <div className="square"></div>;
+				return (
+					<div
+						className="square"
+						key={`${rowIndex}-${squareIndex}-storage`}
+					></div>
+				);
 			}
 			for (const points of tetrominoPoints) {
 				if (squareIndex === points[0] && rowIndex === points[1]) {
