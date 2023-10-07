@@ -5,17 +5,13 @@ import GameBox from './GameBox';
 import Square from './Square';
 import TetrominoStorage from './TetrominoStorage';
 
-function getRandomTetromino() {
-	return tetrominoes[Math.floor(Math.random() * 7)];
-}
-
 export default function Game() {
 	/**
 	 * Creates an empty tetrion
 	 */
 	const [tetrionState, setTetrionState] = useState<
 		Array<Array<number | JSX.Element>>
-	>(Array(17).fill(Array(10).fill(0)));
+	>(Array(22).fill(Array(10).fill(0)));
 
 	const [internalClockState, setInternalClockState] = useState(0); // Time in milliseconds since the game started
 	const [gameState, setgameState] = useState(false); // When set to true, starts the game
@@ -52,6 +48,10 @@ export default function Game() {
 	 */
 	function startTimer() {
 		setgameState(true);
+	}
+
+	function getRandomTetromino() {
+		return tetrominoes[Math.floor(Math.random() * 7)];
 	}
 
 	function storeTetromino(tetromino: tetromino) {
@@ -147,7 +147,7 @@ export default function Game() {
 		);
 		for (const point of tetrominoPoints) {
 			const pointBelow = [point[0], point[1] + 1, 1];
-			if (pointBelow[1] > 16) {
+			if (pointBelow[1] > 21) {
 				return false;
 			}
 
@@ -266,6 +266,11 @@ export default function Game() {
 		return updatedTetrion;
 	}
 
+	function checkGameOver(tetrion: (number | JSX.Element)[][]) {
+		const isLastRowOccupied = tetrion[0].some((square) => square !== 0);
+		return isLastRowOccupied;
+	}
+
 	function getHardDropPreview() {
 		const tetrionInfo = getTetrionStateInfo();
 		const tetrominoPoints = getTetrominoPoints(
@@ -277,7 +282,7 @@ export default function Game() {
 		while (true) {
 			for (const point of tetrominoPoints) {
 				const pointBelow = [point[0], point[1] + levels, 1];
-				if (pointBelow[1] > 16) {
+				if (pointBelow[1] > 21) {
 					const previewAxis = { x: axis.x, y: axis.y + (levels - 1) };
 					preview.levels = levels;
 					preview.previewPoints = getTetrominoPoints(previewAxis);
@@ -373,7 +378,7 @@ export default function Game() {
 					testPoint[0] < 0 ||
 					testPoint[0] > 9 ||
 					testPoint[1] < 0 ||
-					testPoint[1] > 16
+					testPoint[1] > 21
 				) {
 					isAvailable = false;
 					break;
@@ -432,10 +437,16 @@ export default function Game() {
 			});
 			return newRow;
 		});
+
 		const splicedTetrion = checkFilledRows(updatedTetrion);
-		setTetrionState(splicedTetrion);
-		setstoredTetrominoState((prevState) => ({ ...prevState, canSwap: true }));
-		setCurrentTetrominoState(getRandomTetromino());
+		if (checkGameOver(splicedTetrion)) {
+			console.log('game over');
+			setgameState(false);
+		} else {
+			setTetrionState(splicedTetrion);
+			setstoredTetrominoState((prevState) => ({ ...prevState, canSwap: true }));
+			setCurrentTetrominoState(getRandomTetromino());
+		}
 	}
 
 	useEffect(() => {
