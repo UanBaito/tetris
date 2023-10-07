@@ -96,8 +96,9 @@ export default function Game() {
 		});
 		setRetryState(false);
 		setCurrentTetrominoState(getRandomTetromino());
-		setgameState(true);
+		setTetrominoesQueueState(createNewTetrominoQueue());
 		setScoreState({ lineCleared: 0, time: 0 });
+		setgameState(true);
 	}
 
 	function getRandomTetromino() {
