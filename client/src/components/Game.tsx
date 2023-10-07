@@ -61,11 +61,15 @@ export default function Game() {
 	 */
 	function startGame() {
 		setgameState(true);
+		setTetrominoesQueueState(createNewTetrominoQueue());
+	}
+
+	function createNewTetrominoQueue() {
 		const tetrominoesQueue: tetromino[] = Array(5).fill(null);
 		const mappedTetrominoesQueue = tetrominoesQueue.map(() =>
 			getRandomTetromino()
 		);
-		setTetrominoesQueueState(mappedTetrominoesQueue);
+		return mappedTetrominoesQueue;
 	}
 
 	function retryGame() {
@@ -84,6 +88,22 @@ export default function Game() {
 		return tetrominoes[Math.floor(Math.random() * 7)];
 	}
 
+	function getTetrominoFromQueue() {
+		const tetrominoesQueue = [...tetrominoesQueueState];
+		if (tetrominoesQueue.length === 0) {
+			throw new Error('tetrominoesQueue is empty');
+		} else {
+			const nextTetromino = tetrominoesQueue.shift();
+			if (nextTetromino) {
+				tetrominoesQueue.push(getRandomTetromino());
+				setTetrominoesQueueState(tetrominoesQueue);
+				return nextTetromino;
+			} else {
+				throw new Error('nextTetromino is null/undefined/false');
+			}
+		}
+	}
+
 	function storeTetromino(tetromino: tetromino) {
 		if (storedTetrominoState.canSwap) {
 			let staticTetromino: tetromino | null;
@@ -93,7 +113,7 @@ export default function Game() {
 					canSwap: false,
 					tetromino: staticTetromino
 				});
-				setCurrentTetrominoState(getRandomTetromino());
+				setCurrentTetrominoState(getTetrominoFromQueue());
 			} else {
 				setCurrentTetrominoState(storedTetrominoState.tetromino);
 				staticTetromino = getTetromino(tetromino.shape);
@@ -476,7 +496,7 @@ export default function Game() {
 		} else {
 			setTetrionState(splicedTetrion);
 			setstoredTetrominoState((prevState) => ({ ...prevState, canSwap: true }));
-			setCurrentTetrominoState(getRandomTetromino());
+			setCurrentTetrominoState(getTetrominoFromQueue());
 		}
 	}
 

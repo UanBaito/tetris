@@ -21,7 +21,6 @@ export default function TetrominoesQueue({
 	);
 	console.log(tetrominoesQueue);
 	console.log(tetrominoesQueueState);
-	let tetrominoQueue: tetromino[];
 
 	const mappedTetrominoesQueue = tetrominoesQueue.map(
 		(container, containerIndex) => {

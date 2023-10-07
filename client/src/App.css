@@ -6,6 +6,10 @@
 	background-color: #30353e;
 }
 
+body {
+	background-color: #30353e;
+}
+
 .game {
 	display: flex;
 	gap: 2rem;
