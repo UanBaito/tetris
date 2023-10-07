@@ -247,9 +247,6 @@ export default function Game() {
 				return false;
 			}
 		});
-		if (filledRows[0]) {
-			console.log('filled row');
-		}
 		return removeFilledRows(filledRows, tetrion);
 	}
 
