@@ -30,6 +30,9 @@ export default function Game() {
 			tetromino: null
 		});
 	const [retryState, setRetryState] = useState(false);
+	const [tetrominoesQueueState, setTetrominoesQueueState] = useState<
+		tetromino[]
+	>([]);
 
 	/**
 	 * This is the tetromino currently controlled by the player
@@ -58,6 +61,11 @@ export default function Game() {
 	 */
 	function startGame() {
 		setgameState(true);
+		const tetrominoesQueue: tetromino[] = Array(5).fill(null);
+		const mappedTetrominoesQueue = tetrominoesQueue.map(() =>
+			getRandomTetromino()
+		);
+		setTetrominoesQueueState(mappedTetrominoesQueue);
 	}
 
 	function retryGame() {
@@ -549,7 +557,11 @@ export default function Game() {
 					getHardDropPreview={getHardDropPreview}
 				/>
 			</div>
-			<TetrominoesQueue />
+			<TetrominoesQueue
+				tetrominoesQueueState={tetrominoesQueueState}
+				getTetrominoPoints={getTetrominoPoints}
+				getTetromino={getTetromino}
+			/>
 			{retryState ? (
 				<>
 					<button onClick={retryGame} className="start-button">
