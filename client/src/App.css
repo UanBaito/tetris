@@ -9,6 +9,10 @@ body {
 	background-color: #30353e;
 }
 
+h2 {
+	color: white;
+}
+
 .game {
 	display: flex;
 	gap: 2rem;
@@ -22,8 +26,8 @@ body {
 	border: 1px solid black;
 }
 
-.square.occupied {
-	background-color: white !important;
+.square-occupied {
+	border: 1px solid black;
 }
 
 .square-preview {
@@ -69,4 +73,42 @@ body {
 	right: 50%;
 	color: white;
 	transform: translateX(75%);
+}
+
+.tetrominoesqueue-list {
+	background-color: #22262d;
+	display: flex;
+	flex-direction: column;
+	border: 15px solid #676b72;
+	border-radius: 10px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	align-items: center;
+	width: max-content;
+	height: max-content;
+	box-sizing: border-box;
+}
+.tetrominoesqueue-item {
+	background-color: black;
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	grid-template-rows: repeat(2, 1fr);
+}
+
+.score {
+	background-color: #22262d;
+	height: max-content;
+	width: 20rem;
+	border: 15px solid #676b72;
+}
+
+.score h2 {
+	font-size: 1.6rem;
+
+	font-weight: 800;
+}
+
+.score h3 {
+	font-size: 1.3rem;
 }

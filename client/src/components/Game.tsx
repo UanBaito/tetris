@@ -20,6 +20,7 @@ export default function Game() {
 	>(Array(22).fill(Array(10).fill(0)));
 
 	const [internalClockState, setInternalClockState] = useState(0); // Time in milliseconds since the game started
+
 	const intervalRef = useRef<number>();
 
 	const [gameState, setgameState] = useState(false); // When set to true, starts the game
@@ -29,6 +30,10 @@ export default function Game() {
 			tetromino: null
 		});
 	const [retryState, setRetryState] = useState(false);
+
+	/// TODO: add actual points property
+	const [scoreState, setScoreState] = useState({ lineCleared: 0, time: 0 });
+	const timeIntervalRef = useRef(0);
 
 	/**
 	 * This is the tetromino currently controlled by the player
@@ -49,8 +54,18 @@ export default function Game() {
 					return prevState + 1000;
 				});
 			}, 1000);
+
+			timeIntervalRef.current = setInterval(() => {
+				setScoreState((prevState) => ({
+					...prevState,
+					time: prevState.time + 1000
+				}));
+			}, 1000);
 		}
 	}, [gameState]);
+
+	const minutes = Math.floor(Math.floor(scoreState.time / 1000) / 60);
+	const seconds = Math.floor(scoreState.time / 1000) - minutes * 60;
 
 	/**
 	 * Starts the game
@@ -69,6 +84,7 @@ export default function Game() {
 		setRetryState(false);
 		setCurrentTetrominoState(getRandomTetromino());
 		setgameState(true);
+		setScoreState({ lineCleared: 0, time: 0 });
 	}
 
 	function getRandomTetromino() {
@@ -268,6 +284,14 @@ export default function Game() {
 				return false;
 			}
 		});
+		let totalFilledRows = 0;
+		filledRows.forEach(() => {
+			totalFilledRows++;
+		});
+		setScoreState((prevState) => ({
+			...prevState,
+			lineCleared: prevState.lineCleared + totalFilledRows
+		}));
 		return removeFilledRows(filledRows, tetrion);
 	}
 
@@ -463,6 +487,7 @@ export default function Game() {
 		if (checkGameOver(splicedTetrion)) {
 			setRetryState(true);
 			clearInterval(intervalRef.current);
+			clearInterval(timeIntervalRef.current);
 			setgameState(false);
 		} else {
 			setTetrionState(splicedTetrion);
@@ -532,6 +557,9 @@ export default function Game() {
 		}
 	}
 
+	const paddedMinutes = minutes.toString().padStart(2, '0');
+	const paddedSeconds = seconds.toString().padStart(2, '0');
+
 	return (
 		<div onKeyDown={action} tabIndex={-1} className="game">
 			<TetrominoStorage
@@ -539,6 +567,17 @@ export default function Game() {
 				tetromino={storedTetrominoState.tetromino}
 				getTetromino={getTetromino}
 			/>
+			<div className="score">
+				<h2>
+					Lines cleared: <h3>{scoreState.lineCleared}</h3>
+				</h2>
+				<h2>
+					Time:
+					<h3>
+						{paddedMinutes} : {paddedSeconds}
+					</h3>
+				</h2>
+			</div>
 			<div>
 				{retryState && <h2 className="gameover">Game Over</h2>}
 				<GameBox
