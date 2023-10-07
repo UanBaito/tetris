@@ -10,6 +10,7 @@ import { iOffsetData, jlstzOffsetData, tetrominoes } from '../tetrominos';
 import GameBox from './GameBox';
 import Square from './Square';
 import TetrominoStorage from './TetrominoStorage';
+import TetrominoesQueue from './TetrominoesQueue';
 
 export default function Game() {
 	/**
@@ -548,6 +549,7 @@ export default function Game() {
 					getHardDropPreview={getHardDropPreview}
 				/>
 			</div>
+			<TetrominoesQueue />
 			{retryState ? (
 				<>
 					<button onClick={retryGame} className="start-button">
