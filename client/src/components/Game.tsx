@@ -22,7 +22,7 @@ export default function Game() {
 
 	const [internalClockState, setInternalClockState] = useState(0); // Time in milliseconds since the game started
 
-	const intervalRef = useRef<number>();
+	const intervalRef = useRef<number>(0);
 
 	const [gameState, setgameState] = useState(false); // When set to true, starts the game
 	const [storedTetrominoState, setstoredTetrominoState] =
@@ -581,8 +581,27 @@ export default function Game() {
 					event.preventDefault();
 					storeTetromino(currentTetrominoState);
 					break;
+
 				default:
 					break; // do not block other keys
+			}
+		} else if (!gameState && !retryState) {
+			switch (event.code) {
+				case 'Enter':
+					event.preventDefault();
+					startGame();
+					break;
+				default:
+					break;
+			}
+		} else if (!gameState && retryState) {
+			switch (event.code) {
+				case 'Enter':
+					event.preventDefault();
+					retryGame();
+					break;
+				default:
+					break;
 			}
 		}
 	}
@@ -591,52 +610,49 @@ export default function Game() {
 	const paddedSeconds = seconds.toString().padStart(2, '0');
 
 	return (
-		<div onKeyDown={action} tabIndex={-1} className="game">
-			<TetrominoStorage
-				getTetrominoPoints={getTetrominoPoints}
-				tetromino={storedTetrominoState.tetromino}
-				getTetromino={getTetromino}
-			/>
-			<div className="score">
-				<h2>
-					Lines cleared: <h3>{scoreState.lineCleared}</h3>
-				</h2>
-				<h2>
-					Time:
-					<h3>
-						{paddedMinutes} : {paddedSeconds}
-					</h3>
-				</h2>
+		<>
+			<header>
+				Movement: Arrow keys / Rotate: Z, X / Hold: C / Hard drop: Space / Start
+				game: Enter
+			</header>
+			<div onKeyDown={action} tabIndex={-1} className="game">
+				<div className="tetrominostorage-container">
+					<h2 className="box-title">HOLD</h2>
+					<TetrominoStorage
+						getTetrominoPoints={getTetrominoPoints}
+						tetromino={storedTetrominoState.tetromino}
+						getTetromino={getTetromino}
+					/>
+				</div>
+				<div className="score">
+					<h2>
+						Lines cleared: <span>{scoreState.lineCleared}</span>
+					</h2>
+					<h2>
+						Time:
+						<span>
+							{paddedMinutes} : {paddedSeconds}
+						</span>
+					</h2>
+				</div>
+				<div className="gamebox-container">
+					{retryState && <h2 className="box-title">Game Over</h2>}
+					<GameBox
+						tetrionState={tetrionState}
+						currentTetrominoState={currentTetrominoState}
+						getTetrominoPoints={getTetrominoPoints}
+						getHardDropPreview={getHardDropPreview}
+					/>
+				</div>
+				<div className="tetrominoesqueue-container">
+					<h2 className="box-title">NEXT</h2>
+					<TetrominoesQueue
+						tetrominoesQueueState={tetrominoesQueueState}
+						getTetrominoPoints={getTetrominoPoints}
+						getTetromino={getTetromino}
+					/>
+				</div>
 			</div>
-			<div>
-				{retryState && <h2 className="gameover">Game Over</h2>}
-				<GameBox
-					tetrionState={tetrionState}
-					currentTetrominoState={currentTetrominoState}
-					getTetrominoPoints={getTetrominoPoints}
-					getHardDropPreview={getHardDropPreview}
-				/>
-			</div>
-			<TetrominoesQueue
-				tetrominoesQueueState={tetrominoesQueueState}
-				getTetrominoPoints={getTetrominoPoints}
-				getTetromino={getTetromino}
-			/>
-			{retryState ? (
-				<>
-					<button onClick={retryGame} className="start-button">
-						new game
-					</button>
-				</>
-			) : (
-				<button
-					onClick={startGame}
-					className="start-button"
-					disabled={gameState}
-				>
-					start
-				</button>
-			)}
-		</div>
+		</>
 	);
 }
