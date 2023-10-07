@@ -238,6 +238,20 @@ export default function Game() {
 		return true;
 	}
 
+	function checkFilledRows(Tetrion: (number | JSX.Element)[][]) {
+		const filledRows = Tetrion.filter((row) => {
+			const isRowFilled = row.every((square) => square !== 0);
+			if (isRowFilled) {
+				return true;
+			} else {
+				return false;
+			}
+		});
+		if (filledRows[0]) {
+			console.log('filled row');
+		}
+	}
+
 	function getHardDropPreview() {
 		const tetrionInfo = getTetrionStateInfo();
 		const tetrominoPoints = getTetrominoPoints(
@@ -334,21 +348,19 @@ export default function Game() {
 		const tetrionInfo = getTetrionStateInfo();
 		const axis = currentTetrominoState.coords.axis;
 		for (const test of tests) {
-			console.log('test', test);
 			let isAvailable = true;
 			const testAxis = { x: axis.x + test[0], y: axis.y + test[1] };
 			const testTetrominoPoints = getTetrominoPoints(testAxis, newFacing);
 
 			for (const point of testTetrominoPoints) {
 				const testPoint = [...point, 1];
-				console.log(testPoint);
+
 				if (
 					testPoint[0] < 0 ||
 					testPoint[0] > 9 ||
 					testPoint[1] < 0 ||
 					testPoint[1] > 16
 				) {
-					console.log('out of bounds');
 					isAvailable = false;
 					break;
 				}
@@ -359,17 +371,14 @@ export default function Game() {
 						square[2] === testPoint[2]
 					) {
 						isAvailable = false;
-						console.log('occupied');
 					}
 				}
 			}
 
 			if (isAvailable) {
-				console.log('rotating');
 				return test;
 			}
 		}
-		console.log('rotation failed');
 	}
 
 	function getTetrionStateInfo() {
@@ -409,6 +418,7 @@ export default function Game() {
 			});
 			return newRow;
 		});
+		checkFilledRows(updatedTetrion);
 		setTetrionState(updatedTetrion);
 		setstoredTetrominoState((prevState) => ({ ...prevState, canSwap: true }));
 		setCurrentTetrominoState(getRandomTetromino());
