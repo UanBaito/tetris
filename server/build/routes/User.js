@@ -4,10 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 const express_1 = __importDefault(require("express"));
 const user_1 = __importDefault(require("../controllers/user"));
-const router = express_1.default.Router();
-router.post('/create', user_1.default.createUser);
-router.get('/get/:userId', user_1.default.readUser);
-router.get('/get/', user_1.default.readAll);
-router.patch('/update/:UserId', user_1.default.updateUserPoints);
-router.delete('/delete/:userId', user_1.default.deleteUser);
-module.exports = router;
+const app = express_1.default.app();
+app.post('/create', user_1.default.createUser);
+app.get('/get/:userId', user_1.default.readUser);
+app.get('/get/', user_1.default.readAll);
+app.patch('/update/:UserId', user_1.default.updateUserPoints);
+app.delete('/delete/:userId', user_1.default.deleteUser);
+module.exports = app;
