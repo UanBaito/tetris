@@ -1,0 +1,110 @@
+import { useEffect, useRef } from 'react';
+
+type props = {
+	score: { linesCleared: number; time: number };
+	retryState: boolean;
+};
+
+type user = { name: string; score: number; time: number };
+
+export default function ScoreForm({ score, retryState }: props) {
+	const nameInputRef = useRef<HTMLInputElement>(null);
+	const nameRef = useRef<string>('');
+	const dialogRef = useRef<HTMLDialogElement>(null);
+
+	async function postUser(name: string) {
+		try {
+			const res = await fetch('http://localhost:9001/user', {
+				method: 'post',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					name: nameRef.current
+				})
+			});
+
+			if (res.status === 200) {
+				console.log('good');
+			} else {
+				throw new Error('something went wrong');
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	}
+
+	function getUsername() {
+		const name = localStorage.getItem('name');
+		if (name) {
+			nameRef.current = name;
+			updateUserScore();
+		} else {
+			dialogRef.current?.showModal();
+			///promt user for name
+			/// and check name is not occupied, if it isnt, postUser
+		}
+	}
+
+	async function validateUsername(e: React.FormEvent<HTMLFormElement>) {
+		try {
+			const response = await fetch('http://localhost:9001/user');
+			const usersList: user[] = await response.json();
+			const name = nameInputRef.current?.value;
+			if (name === '') {
+				console.log('Username cannot be empty');
+				dialogRef.current?.showModal();
+			} else {
+				const isUserOccupied = usersList.some((user) => user.name === name);
+				if (isUserOccupied) {
+					console.log('Username is occupied');
+				} else {
+					localStorage.setItem('name', name!);
+					nameRef.current = name!;
+					await postUser(name!);
+					await updateUserScore();
+				}
+			}
+			e.preventDefault();
+		} catch (err) {
+			console.log(err);
+		}
+	}
+
+	async function updateUserScore() {
+		if (nameRef.current === '') {
+			getUsername();
+			return;
+		}
+		try {
+			const res = await fetch('http://localhost:9001/user', {
+				method: 'put',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					name: nameRef.current,
+					linesCleared: score.linesCleared,
+					time: score.time
+				})
+			});
+
+			if (res.status === 200) {
+				console.log('good');
+			} else {
+				throw new Error('something went wrong');
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	}
+
+	if (retryState) {
+		updateUserScore();
+	}
+
+	return (
+		<dialog ref={dialogRef} className="username-dialog">
+			<form method="dialog" onSubmit={validateUsername}>
+				<label htmlFor="username-input">Enter username</label>
+				<input type="text" ref={nameInputRef} id="username-input" />
+			</form>
+		</dialog>
+	);
+}

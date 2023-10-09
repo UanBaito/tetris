@@ -19,8 +19,6 @@ export default function TetrominoesQueue({
 	const tetrominoesQueue: number[][][] = Array(5).fill(
 		Array(3).fill(Array(5).fill(0))
 	);
-	console.log(tetrominoesQueue);
-	console.log(tetrominoesQueueState);
 
 	const mappedTetrominoesQueue = tetrominoesQueue.map(
 		(container, containerIndex) => {

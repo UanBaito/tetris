@@ -1,15 +1,21 @@
 #root {
 	max-width: 1280px;
-	height: 100%;
 	text-align: center;
 	background-color: #30353e;
 	display: block;
 }
 
+@font-face {
+	font-family: JetBrainsMono;
+	src: url(/client/src/assets/JetBrainsMono-Regular.ttf);
+}
+
 html,
 body,
-#root {
+#root,
+#root > div {
 	height: 100%;
+	width: 100%;
 }
 
 body {
@@ -17,10 +23,12 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: flex-start;
+	margin: 0;
 }
 
 header {
 	width: 100%;
+	margin: 0.3rem 0;
 	border-bottom: 1px solid gray;
 }
 
@@ -38,18 +46,22 @@ h2 {
 }
 
 .game {
-	margin: 2rem;
+	margin-top: 0.4rem;
 	display: grid;
 	grid-template-columns: auto;
-	grid-template-rows: 250px auto;
-	gap: 2rem;
-	grid-template-areas: 'storage gamebox queue' 'score gamebox queue';
-	position: relative;
+	grid-template-rows: 100px 250px auto;
+	gap: 1rem;
+	grid-template-areas: 'storage gamebox queue' 'score gamebox queue' '. gamebox queue';
+	justify-content: center;
+}
+
+.game:focus-visible {
+	outline: none;
 }
 
 .square {
-	width: 30px;
-	height: 30px;
+	width: 100%;
+	aspect-ratio: 1;
 	background-color: #22262d;
 	border: 1px solid black;
 }
@@ -72,9 +84,13 @@ h2 {
 
 .GameBox {
 	display: grid;
-	border: 15px solid rgba(255, 255, 255, 0.267);
+	border: 10px solid rgba(255, 255, 255, 0.267);
+	grid-template-columns: repeat(10, 2rem);
+	max-width: max-content;
+}
 
-	grid-template-columns: 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px;
+.gameover {
+	height: 1.5rem;
 }
 
 .start-button {
@@ -98,20 +114,18 @@ h2 {
 .tetromino-storage {
 	background-color: black;
 	display: grid;
-	grid-template-columns: repeat(5, 30px);
-	grid-template-rows: repeat(2, 30px);
+	grid-template-columns: repeat(5, 2rem);
+	grid-template-rows: repeat(2, 2rem);
 	width: max-content;
 	height: max-content;
-	border: 15px solid #676b72;
+	border: 10px solid #676b72;
 }
 
 .box-title {
-	position: absolute;
-	top: -40px;
 	text-align: center;
 	color: white;
-	right: 50%;
-	transform: translate(50%);
+	font-size: 1rem;
+	margin: 0;
 }
 
 .tetrominoesqueue-container {
@@ -123,40 +137,81 @@ h2 {
 	background-color: #22262d;
 	display: flex;
 	flex-direction: column;
-	border: 15px solid #676b72;
-
+	border: 10px solid #676b72;
 	list-style: none;
 	margin: 0;
 	padding: 0;
 	align-items: center;
 	width: max-content;
 	height: max-content;
-	box-sizing: border-box;
 }
 
 .tetrominoesqueue-item {
 	background-color: black;
 	display: grid;
-	grid-template-columns: repeat(5, 1fr);
-	grid-template-rows: repeat(2, 1fr);
+	grid-template-columns: repeat(5, 2rem);
+	grid-template-rows: repeat(2, 2rem);
 }
 
 .score {
 	background-color: #22262d;
-	height: max-content;
-	max-width: 350px;
-	border: 15px solid #676b72;
+	border: 10px solid #676b72;
 	grid-area: score;
+	max-height: 60%;
 }
 
 .score h2 {
-	font-size: 1.2rem;
+	font-size: 1rem;
 	font-weight: 800;
 }
 
 .score span {
 	display: block;
-	font-size: 1.1rem;
+	font-size: 1rem;
 	margin: 0.3rem;
 	font-weight: 500;
+}
+
+.username-dialog {
+	background-color: #22262db9;
+	color: white;
+	backdrop-filter: blur(10px);
+	border: 5px solid #676b72;
+	font-weight: 700;
+	font-family: JetBrainsMono;
+}
+
+.username-dialog form {
+	display: flex;
+	flex-direction: column;
+}
+.username-dialog input {
+	background-color: #30353eb0;
+	padding: 0;
+	border: none;
+	color: white;
+}
+
+@media screen and (max-width: 700px) {
+	html {
+		font-size: 10px !important;
+	}
+}
+
+@media screen and (max-height: 700px) {
+	html {
+		font-size: 10px !important;
+	}
+}
+
+@media screen and (max-width: 820px) {
+	html {
+		font-size: 13px !important;
+	}
+}
+
+@media screen and (max-height: 820px) {
+	html {
+		font-size: 13px !important;
+	}
 }

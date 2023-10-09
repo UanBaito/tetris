@@ -11,6 +11,8 @@ import GameBox from './GameBox';
 import Square from './Square';
 import TetrominoStorage from './TetrominoStorage';
 import TetrominoesQueue from './TetrominoesQueue';
+import ScoreBoard from './ScoreBoard';
+import ScoreForm from './ScoreForm';
 
 export default function Game() {
 	/**
@@ -36,7 +38,7 @@ export default function Game() {
 	>([]);
 
 	/// TODO: add actual points property
-	const [scoreState, setScoreState] = useState({ lineCleared: 0, time: 0 });
+	const [scoreState, setScoreState] = useState({ linesCleared: 0, time: 0 });
 	const timeIntervalRef = useRef(0);
 
 	/**
@@ -97,7 +99,7 @@ export default function Game() {
 		setRetryState(false);
 		setCurrentTetrominoState(getRandomTetromino());
 		setTetrominoesQueueState(createNewTetrominoQueue());
-		setScoreState({ lineCleared: 0, time: 0 });
+		setScoreState({ linesCleared: 0, time: 0 });
 		setgameState(true);
 	}
 
@@ -320,7 +322,7 @@ export default function Game() {
 		});
 		setScoreState((prevState) => ({
 			...prevState,
-			lineCleared: prevState.lineCleared + totalFilledRows
+			linesCleared: prevState.linesCleared + totalFilledRows
 		}));
 		return removeFilledRows(filledRows, tetrion);
 	}
@@ -560,13 +562,13 @@ export default function Game() {
 					}
 					break;
 				case 'ArrowRight':
-					event.preventDefault;
+					event.preventDefault();
 					if (checkRight()) {
 						moveRight();
 					}
 					break;
 				case 'Space':
-					event.preventDefault;
+					event.preventDefault();
 					hardDrop();
 					break;
 				case 'KeyZ':
@@ -613,8 +615,8 @@ export default function Game() {
 		<>
 			<header>
 				<h2>
-					Movement: Arrow keys / Rotate: Z, X / Hold: C / Hard drop: Space /
-					Start game: Enter
+					Movement: Arrow keys / Rotate: Z, X / Hold: C / Hard drop: Space / New
+					game: Enter
 				</h2>
 			</header>
 			<div onKeyDown={action} tabIndex={-1} className="game">
@@ -628,7 +630,7 @@ export default function Game() {
 				</div>
 				<div className="score">
 					<h2>
-						Lines cleared: <span>{scoreState.lineCleared}</span>
+						Lines cleared: <span>{scoreState.linesCleared}</span>
 					</h2>
 					<h2>
 						Time:
@@ -638,7 +640,9 @@ export default function Game() {
 					</h2>
 				</div>
 				<div className="gamebox-container">
-					{retryState && <h2 className="box-title">Game Over</h2>}
+					<div className="gameover">
+						{retryState && <h2 className="box-title">Game Over</h2>}
+					</div>
 					<GameBox
 						tetrionState={tetrionState}
 						currentTetrominoState={currentTetrominoState}
@@ -655,6 +659,9 @@ export default function Game() {
 					/>
 				</div>
 			</div>
+			<ScoreBoard>
+				<ScoreForm score={scoreState} retryState={retryState} />
+			</ScoreBoard>
 		</>
 	);
 }
