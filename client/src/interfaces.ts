@@ -34,3 +34,5 @@ export interface storedTetromino {
 	canSwap: boolean;
 	tetromino: tetromino | null;
 }
+
+export type user = { name: string; linescleared: number; time: number };

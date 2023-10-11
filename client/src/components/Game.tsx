@@ -13,6 +13,7 @@ import TetrominoStorage from './TetrominoStorage';
 import TetrominoesQueue from './TetrominoesQueue';
 import ScoreBoard from './ScoreBoard';
 import ScoreForm from './ScoreForm';
+import ScoreBoardList from './ScoreBoardList';
 
 export default function Game() {
 	/**
@@ -612,7 +613,7 @@ export default function Game() {
 	const paddedSeconds = seconds.toString().padStart(2, '0');
 
 	return (
-		<>
+		<div className="wrapper">
 			<header>
 				<h2>
 					Movement: Arrow keys / Rotate: Z, X / Hold: C / Hard drop: Space / New
@@ -661,7 +662,8 @@ export default function Game() {
 			</div>
 			<ScoreBoard>
 				<ScoreForm score={scoreState} retryState={retryState} />
+				<ScoreBoardList />
 			</ScoreBoard>
-		</>
+		</div>
 	);
 }

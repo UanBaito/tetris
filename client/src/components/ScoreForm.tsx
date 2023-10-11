@@ -45,17 +45,25 @@ export default function ScoreForm({ score, retryState }: props) {
 	}
 
 	async function validateUsername(e: React.FormEvent<HTMLFormElement>) {
+		const warningLabel = document.getElementById('warning-label');
 		try {
 			const response = await fetch('http://localhost:9001/user');
 			const usersList: user[] = await response.json();
 			const name = nameInputRef.current?.value;
 			if (name === '') {
-				console.log('Username cannot be empty');
 				dialogRef.current?.showModal();
+				nameInputRef.current?.setAttribute('data-isvalid', 'true');
+				if (warningLabel) {
+					warningLabel.textContent = 'Username cannot be empty';
+				}
 			} else {
 				const isUserOccupied = usersList.some((user) => user.name === name);
 				if (isUserOccupied) {
-					console.log('Username is occupied');
+					dialogRef.current?.showModal();
+					nameInputRef.current?.setAttribute('data-isvalid', 'true');
+					if (warningLabel) {
+						warningLabel.textContent = 'Username is occupied';
+					}
 				} else {
 					localStorage.setItem('name', name!);
 					nameRef.current = name!;
@@ -103,8 +111,14 @@ export default function ScoreForm({ score, retryState }: props) {
 		<dialog ref={dialogRef} className="username-dialog">
 			<form method="dialog" onSubmit={validateUsername}>
 				<label htmlFor="username-input">Enter username</label>
-				<input type="text" ref={nameInputRef} id="username-input" />
+				<input
+					type="text"
+					ref={nameInputRef}
+					id="username-input"
+					data-isvalid="false"
+				/>
 			</form>
+			<label id="warning-label" htmlFor="username-input"></label>
 		</dialog>
 	);
 }

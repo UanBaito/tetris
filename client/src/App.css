@@ -1,28 +1,20 @@
-#root {
-	max-width: 1280px;
-	text-align: center;
-	background-color: #30353e;
-	display: block;
-}
-
 @font-face {
 	font-family: JetBrainsMono;
-	src: url(/client/src/assets/JetBrainsMono-Regular.ttf);
+	src: url(/assets/JetBrainsMono-SemiBold.ttf);
 }
 
-html,
 body,
 #root,
 #root > div {
 	height: 100%;
-	width: 100%;
+	font-family: JetBrainsMono;
+	text-align: center;
 }
 
-body {
+html,
+body,
+#root {
 	background-color: #30353e;
-	display: flex;
-	justify-content: center;
-	align-items: flex-start;
 	margin: 0;
 }
 
@@ -34,7 +26,7 @@ header {
 
 header h2 {
 	font-size: 1rem;
-	line-height: 1rem;
+	line-height: 1.2rem;
 	margin: 0;
 	font-weight: 500;
 }
@@ -45,11 +37,17 @@ h2 {
 	z-index: 9999;
 }
 
+.wrapper {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
 .game {
 	margin-top: 0.4rem;
 	display: grid;
 	grid-template-columns: auto;
-	grid-template-rows: 100px 250px auto;
+	grid-template-rows: 100px 250px 29rem;
 	gap: 1rem;
 	grid-template-areas: 'storage gamebox queue' 'score gamebox queue' '. gamebox queue';
 	justify-content: center;
@@ -177,19 +175,65 @@ h2 {
 	color: white;
 	backdrop-filter: blur(10px);
 	border: 5px solid #676b72;
-	font-weight: 700;
-	font-family: JetBrainsMono;
+	min-width: 19rem;
+	box-shadow: #00000048 0 4px 4px;
 }
 
 .username-dialog form {
 	display: flex;
 	flex-direction: column;
 }
+
+.username-dialog label {
+	font-size: 1.2rem;
+}
+
+.scoreboard {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	background-color: #22262d;
+	color: white;
+	max-height: 500px;
+	margin-bottom: 2rem;
+	padding-bottom: 1rem;
+}
+
+.scoreboard-title {
+	border-bottom: 1px solid gray;
+	padding: 1rem;
+}
+
+.scoreboard-title h1 {
+	text-align: center;
+	display: inline;
+}
+
+.scoreboard table thead th {
+	width: 33%;
+}
+
 .username-dialog input {
-	background-color: #30353eb0;
+	background-color: #30353e;
 	padding: 0;
 	border: none;
 	color: white;
+	border-bottom: 1px solid white;
+	padding: 0.2rem;
+	font-size: 1.2rem;
+}
+
+.username-dialog input:focus {
+	outline: none;
+}
+
+.username-dialog input[data-isvalid='true'] {
+	border-bottom: 1px solid red;
+}
+
+#warning-label {
+	margin-top: 0.2rem;
+	color: rgb(226, 78, 78);
 }
 
 @media screen and (max-width: 700px) {
