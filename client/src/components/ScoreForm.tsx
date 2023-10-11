@@ -12,7 +12,7 @@ export default function ScoreForm({ score, retryState }: props) {
 	const nameRef = useRef<string>('');
 	const dialogRef = useRef<HTMLDialogElement>(null);
 
-	async function postUser(name: string) {
+	async function postUser() {
 		try {
 			const res = await fetch('http://localhost:9001/user', {
 				method: 'post',
@@ -39,8 +39,6 @@ export default function ScoreForm({ score, retryState }: props) {
 			updateUserScore();
 		} else {
 			dialogRef.current?.showModal();
-			///promt user for name
-			/// and check name is not occupied, if it isnt, postUser
 		}
 	}
 
@@ -67,7 +65,7 @@ export default function ScoreForm({ score, retryState }: props) {
 				} else {
 					localStorage.setItem('name', name!);
 					nameRef.current = name!;
-					await postUser(name!);
+					await postUser();
 					await updateUserScore();
 				}
 			}
@@ -82,6 +80,8 @@ export default function ScoreForm({ score, retryState }: props) {
 			getUsername();
 			return;
 		}
+
+		/// TODO: check if user exists first
 		try {
 			const res = await fetch('http://localhost:9001/user', {
 				method: 'put',

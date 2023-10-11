@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { user } from '../interfaces';
+import TimeCounter from './TimeCounter';
 
 export default function () {
 	const [usersList, setUsersList] = useState<user[] | null>(null);
@@ -30,7 +31,7 @@ export default function () {
 
 	return (
 		<table>
-			<caption>ScoreBoard</caption>
+			<caption>Scoreboard</caption>
 			<thead>
 				<tr>
 					<th>Name</th>
@@ -56,7 +57,9 @@ function UserItem({
 		<tr>
 			<td>{name}</td>
 			<td>{linescleared}</td>
-			<td>{time}</td>
+			<td>
+				<TimeCounter milliseconds={time} />
+			</td>
 		</tr>
 	);
 }

@@ -1,6 +1,19 @@
 @font-face {
 	font-family: JetBrainsMono;
-	src: url(/assets/JetBrainsMono-SemiBold.ttf);
+	src: url(/assets/JetBrainsMono-SemiBold.woff2);
+	font-weight: bold;
+}
+
+@font-face {
+	font-family: JetBrainsMono;
+	src: url(/assets/JetBrainsMono-Bold.woff2);
+	font-weight: bolder;
+}
+
+@font-face {
+	font-family: JetBrainsMono;
+	src: url(/assets/JetBrainsMono-Regular.woff2);
+	font-weight: normal;
 }
 
 body,
@@ -8,6 +21,7 @@ body,
 #root > div {
 	height: 100%;
 	font-family: JetBrainsMono;
+	font-weight: normal;
 	text-align: center;
 }
 
@@ -28,7 +42,7 @@ header h2 {
 	font-size: 1rem;
 	line-height: 1.2rem;
 	margin: 0;
-	font-weight: 500;
+	font-weight: bolder;
 }
 
 h2 {
@@ -195,22 +209,36 @@ h2 {
 	background-color: #22262d;
 	color: white;
 	max-height: 500px;
-	margin-bottom: 2rem;
-	padding-bottom: 1rem;
+	margin: 1.5rem;
 }
 
-.scoreboard-title {
+.scoreboard table {
+	border-collapse: collapse;
+}
+
+.scoreboard table caption {
+	font-weight: bolder;
+	font-size: 1.3rem;
+	margin-bottom: 0.3rem;
+	padding: 0.2rem;
+
 	border-bottom: 1px solid gray;
-	padding: 1rem;
 }
 
-.scoreboard-title h1 {
-	text-align: center;
-	display: inline;
+.scoreboard table td,
+th {
+	padding: 0.3rem;
 }
 
 .scoreboard table thead th {
+	font-weight: bolder;
+	font-size: 1.1rem;
 	width: 33%;
+}
+
+.scoreboard table td,
+th {
+	border-bottom: 2px solid gray;
 }
 
 .username-dialog input {

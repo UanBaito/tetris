@@ -14,6 +14,7 @@ import TetrominoesQueue from './TetrominoesQueue';
 import ScoreBoard from './ScoreBoard';
 import ScoreForm from './ScoreForm';
 import ScoreBoardList from './ScoreBoardList';
+import TimeCounter from './TimeCounter';
 
 export default function Game() {
 	/**
@@ -70,9 +71,6 @@ export default function Game() {
 			}, 1000);
 		}
 	}, [gameState]);
-
-	const minutes = Math.floor(Math.floor(scoreState.time / 1000) / 60);
-	const seconds = Math.floor(scoreState.time / 1000) - minutes * 60;
 
 	/**
 	 * Starts the game
@@ -609,9 +607,6 @@ export default function Game() {
 		}
 	}
 
-	const paddedMinutes = minutes.toString().padStart(2, '0');
-	const paddedSeconds = seconds.toString().padStart(2, '0');
-
 	return (
 		<div className="wrapper">
 			<header>
@@ -635,9 +630,7 @@ export default function Game() {
 					</h2>
 					<h2>
 						Time:
-						<span>
-							{paddedMinutes} : {paddedSeconds}
-						</span>
+						<TimeCounter milliseconds={scoreState.time} />
 					</h2>
 				</div>
 				<div className="gamebox-container">

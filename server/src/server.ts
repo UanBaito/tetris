@@ -31,7 +31,7 @@ app.put('/user', async (req, res) => {
 	try {
 		const name: string = req.body.name;
 		const linesCleared: number = req.body.linesCleared;
-		const time: number = req.body.time / 1000; //convert milliseconds to seconds
+		const time: number = req.body.time;
 
 		await db.query(
 			'UPDATE users SET linescleared = $2 WHERE name = $1 AND linesCleared < $2',

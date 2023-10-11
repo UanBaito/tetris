@@ -43,7 +43,7 @@ app.put('/user', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const name = req.body.name;
         const linesCleared = req.body.linesCleared;
-        const time = req.body.time / 1000; //convert milliseconds to seconds
+        const time = req.body.time;
         yield db_1.default.query('UPDATE users SET linescleared = $2 WHERE name = $1 AND linesCleared < $2', [name, linesCleared]);
         yield db_1.default.query('UPDATE users SET time = $2 WHERE name = $1 AND time < $2', [
             name,
