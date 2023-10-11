@@ -6,7 +6,7 @@ import {
 	useState
 } from 'react';
 import { storedTetromino, tetromino } from '../interfaces';
-import { iOffsetData, jlstzOffsetData, tetrominoes } from '../tetrominos';
+import { iOffsetData, jlstzOffsetData, tetrominoes } from '../constants';
 import GameBox from './GameBox';
 import Square from './Square';
 import TetrominoStorage from './TetrominoStorage';
@@ -15,6 +15,7 @@ import ScoreBoard from './ScoreBoard';
 import ScoreForm from './ScoreForm';
 import ScoreBoardList from './ScoreBoardList';
 import TimeCounter from './TimeCounter';
+import ConfigBox from './ConfigBox';
 
 export default function Game() {
 	/**
@@ -38,6 +39,8 @@ export default function Game() {
 	const [tetrominoesQueueState, setTetrominoesQueueState] = useState<
 		tetromino[]
 	>([]);
+
+	const [difficulty, setDifficulty] = useState(1);
 
 	/// TODO: add actual points property
 	const [scoreState, setScoreState] = useState({ linesCleared: 0, time: 0 });
@@ -86,6 +89,14 @@ export default function Game() {
 			getRandomTetromino()
 		);
 		return mappedTetrominoesQueue;
+	}
+
+	function changeDifficulty(raiseBy: 1 | -1) {
+		if (raiseBy === 1) {
+			setDifficulty((prevState) => prevState + 1);
+		} else {
+			setDifficulty((prevState) => prevState - 1);
+		}
 	}
 
 	function retryGame() {
@@ -652,6 +663,11 @@ export default function Game() {
 						getTetromino={getTetromino}
 					/>
 				</div>
+				<ConfigBox
+					difficulty={difficulty}
+					changeDifficulty={changeDifficulty}
+					gameState={gameState}
+				/>
 			</div>
 			<ScoreBoard>
 				<ScoreForm score={scoreState} retryState={retryState} />

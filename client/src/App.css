@@ -63,7 +63,7 @@ h2 {
 	grid-template-columns: auto;
 	grid-template-rows: 100px 250px 29rem;
 	gap: 1rem;
-	grid-template-areas: 'storage gamebox queue' 'score gamebox queue' '. gamebox queue';
+	grid-template-areas: 'storage gamebox queue' 'score gamebox queue' 'config-box gamebox queue';
 	justify-content: center;
 }
 
@@ -258,6 +258,51 @@ th {
 
 .username-dialog input[data-isvalid='true'] {
 	border-bottom: 1px solid red;
+}
+
+.config-box {
+	grid-area: config-box;
+	border: 10px solid #676b72;
+	max-height: 7rem;
+	background-color: #22262d;
+}
+
+.difficulty h1 {
+	color: white;
+	font-size: 1.2rem;
+}
+
+.difficulty-slider {
+	display: flex;
+	justify-content: space-between;
+	width: 10rem;
+}
+
+.difficulty-slider-button {
+	background-color: transparent;
+	box-shadow: none;
+	border: none;
+	border-radius: 0;
+	padding: 0.2rem;
+	color: white;
+}
+
+.difficulty-slider-button:disabled {
+	color: black;
+}
+
+.difficulty span {
+	display: block;
+	width: 5rem;
+}
+
+.difficulty h2 {
+	display: inline;
+	font-size: 1.2rem;
+	text-transform: capitalize;
+	padding: 0 0.2rem;
+	width: 20px;
+	font-weight: bold;
 }
 
 #warning-label {

@@ -337,3 +337,4 @@ export const jlstzOffsetData = [
 ];
 
 export const tetrominoes = [I, L, J, O, S, T, Z];
+export const difficulties = ['easy', 'normal', 'hard'];

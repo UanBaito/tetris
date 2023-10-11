@@ -1,5 +1,5 @@
 import Square from './Square';
-import { tetrominoes } from '../tetrominos';
+import { tetrominoes } from '../constants';
 import { storedTetromino, tetromino } from '../interfaces';
 
 type props = {
