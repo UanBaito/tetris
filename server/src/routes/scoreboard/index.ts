@@ -27,9 +27,15 @@ scoreboardRouter.put('/', async (req, res) => {
 
 scoreboardRouter.get('/', async (req, res) => {
 	try {
-		const easy = await db.query('SELECT * FROM easy');
-		const normal = await db.query('SELECT * FROM normal');
-		const hard = await db.query('SELECT * FROM hard');
+		const easy = await db.query(
+			'SELECT * FROM easy ORDER BY points DESC, time DESC'
+		);
+		const normal = await db.query(
+			'SELECT * FROM normal ORDER BY points DESC, time DESC'
+		);
+		const hard = await db.query(
+			'SELECT * FROM hard ORDER BY points DESC, time DESC'
+		);
 
 		res.send([easy.rows, normal.rows, hard.rows]);
 		logSuccess('Scoreboard ', ' sent');

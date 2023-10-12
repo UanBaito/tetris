@@ -35,9 +35,9 @@ exports.scoreboardRouter.put('/', (req, res) => __awaiter(void 0, void 0, void 0
 }));
 exports.scoreboardRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const easy = yield db_1.default.query('SELECT * FROM easy');
-        const normal = yield db_1.default.query('SELECT * FROM normal');
-        const hard = yield db_1.default.query('SELECT * FROM hard');
+        const easy = yield db_1.default.query('SELECT * FROM easy ORDER BY points DESC, time DESC');
+        const normal = yield db_1.default.query('SELECT * FROM normal ORDER BY points DESC, time DESC');
+        const hard = yield db_1.default.query('SELECT * FROM hard ORDER BY points DESC, time DESC');
         res.send([easy.rows, normal.rows, hard.rows]);
         (0, logging_1.logSuccess)('Scoreboard ', ' sent');
     }
