@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "src/server.js",
 	"scripts": {
-		"build": "rm -rf build/ && npm run install && tsc",
+		"build": "rm -rf build/ && npm install && tsc",
 		"start": "node build/server.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
