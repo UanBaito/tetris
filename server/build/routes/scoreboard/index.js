@@ -15,29 +15,33 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.scoreboardRouter = void 0;
 const express_1 = __importDefault(require("express"));
 const db_1 = __importDefault(require("../../db"));
+const pg_format_1 = __importDefault(require("pg-format"));
+const logging_1 = require("../../logging");
 exports.scoreboardRouter = express_1.default.Router();
 exports.scoreboardRouter.put('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const name = req.body.name;
-        const linescleared = req.body.linescleared;
+        const linesCleared = req.body.linesCleared;
         const time = req.body.time;
-        yield db_1.default.query('UPDATE users SET linescleared = $2 WHERE name = $1 AND linesCleared < $2', [name, linescleared]);
-        yield db_1.default.query('UPDATE users SET time = $2 WHERE name = $1 AND time < $2', [
-            name,
-            time
-        ]);
+        const difficulty = req.body.difficulty;
+        const sql = (0, pg_format_1.default)('INSERT INTO %I as d (name, points, time) VALUES ($1, $2, $3) ON CONFLICT (name) DO UPDATE SET points = (CASE WHEN d.points < $2 THEN $2 ELSE d.points END), time = (CASE WHEN d.time < $3 THEN $3 ELSE d.time END)', difficulty);
+        yield db_1.default.query(sql, [name, linesCleared, time]);
         res.send('oki');
+        (0, logging_1.logSuccess)('Score for player ' + req.body.name, ' updated/created');
     }
     catch (err) {
-        console.log(err);
+        (0, logging_1.logError)(err);
     }
 }));
 exports.scoreboardRouter.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const results = yield db_1.default.query('SELECT * FROM users');
-        res.send(results.rows);
+        const easy = yield db_1.default.query('SELECT * FROM easy');
+        const normal = yield db_1.default.query('SELECT * FROM normal');
+        const hard = yield db_1.default.query('SELECT * FROM hard');
+        res.send([easy.rows, normal.rows, hard.rows]);
+        (0, logging_1.logSuccess)('Scoreboard ', ' sent');
     }
     catch (err) {
-        console.log(err);
+        (0, logging_1.logError)(err);
     }
 }));

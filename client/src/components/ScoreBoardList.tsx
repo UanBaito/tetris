@@ -1,46 +1,63 @@
 import { useEffect, useState } from 'react';
-import { user } from '../interfaces';
+import { scoreboardItem } from '../interfaces';
 import TimeCounter from './TimeCounter';
 
 export default function () {
-	const [usersList, setUsersList] = useState<user[] | null>(null);
+	const [difficultiesArray, setDifficultiesArray] = useState<any>(null);
+	const [difficultyTab, setDifficultyTab] = useState(1);
+
+	function handleChangeTab(tabIndex: number) {
+		setDifficultyTab(tabIndex);
+	}
 
 	useEffect(() => {
 		async function fetchBoard() {
-			const response = await fetch('http://localhost:9001/user');
-			const usersList = await response.json();
-			setUsersList(usersList);
+			const response = await fetch('http://localhost:9001/scoreboard');
+			const difficultiesArray: scoreboardItem[][] = await response.json();
+			setDifficultiesArray(difficultiesArray);
 		}
 		fetchBoard();
 	}, []);
 
-	if (usersList === null) {
+	if (difficultiesArray === null) {
 		return <div>...Loading</div>;
 	}
 
-	const mappedUsersList = usersList.map((user, index) => {
-		return (
-			<UserItem
-				key={user.name}
-				name={user.name}
-				linescleared={user.linescleared}
-				time={user.time}
-			/>
-		);
-	});
+	const mappedDifficultyTables = difficultiesArray.map(
+		(difficulty: scoreboardItem[]) => {
+			const mappedUsersList = difficulty.map((user) => {
+				return (
+					<UserItem
+						key={user.name}
+						name={user.name}
+						linescleared={user.points}
+						time={user.time}
+					/>
+				);
+			});
+
+			return mappedUsersList;
+		}
+	);
 
 	return (
-		<table>
-			<caption>Scoreboard</caption>
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Lines Cleared</th>
-					<th>Time</th>
-				</tr>
-			</thead>
-			<tbody>{mappedUsersList}</tbody>
-		</table>
+		<>
+			<DifficultyTabs
+				handleChangeTab={handleChangeTab}
+				difficultyTab={difficultyTab}
+			/>
+			<table>
+				<caption>Scoreboard</caption>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Lines Cleared</th>
+						<th>Time</th>
+					</tr>
+				</thead>
+				<tbody>{mappedDifficultyTables[difficultyTab]}</tbody>
+			</table>
+		</>
 	);
 }
 
@@ -61,5 +78,48 @@ function UserItem({
 				<TimeCounter milliseconds={time} />
 			</td>
 		</tr>
+	);
+}
+
+export function DifficultyTabs({
+	handleChangeTab,
+	difficultyTab
+}: {
+	handleChangeTab: (tabIndex: number) => void;
+	difficultyTab: number;
+}) {
+	return (
+		<div className="difficulty-tab-container">
+			<button
+				className={`difficulty-tab ${
+					difficultyTab === 0 ? 'difficulty-tab-selected' : ''
+				}`}
+				onClick={() => {
+					handleChangeTab(0);
+				}}
+			>
+				<h2>Easy</h2>
+			</button>
+			<button
+				className={`difficulty-tab ${
+					difficultyTab === 1 ? 'difficulty-tab-selected' : ''
+				}`}
+				onClick={() => {
+					handleChangeTab(1);
+				}}
+			>
+				<h2>Normal</h2>
+			</button>
+			<button
+				className={`difficulty-tab ${
+					difficultyTab === 2 ? 'difficulty-tab-selected' : ''
+				}`}
+				onClick={() => {
+					handleChangeTab(2);
+				}}
+			>
+				<h2>Hard</h2>
+			</button>
+		</div>
 	);
 }

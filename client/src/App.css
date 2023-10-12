@@ -32,6 +32,14 @@ body,
 	margin: 0;
 }
 
+button {
+	cursor: pointer;
+}
+
+button:disabled {
+	cursor: auto;
+}
+
 header {
 	width: 100%;
 	margin: 0.3rem 0;
@@ -208,7 +216,7 @@ h2 {
 	flex-direction: column;
 	background-color: #22262d;
 	color: white;
-	max-height: 500px;
+	height: 500px;
 	margin: 1.5rem;
 	border: 10px solid #676b72;
 }
@@ -228,7 +236,7 @@ h2 {
 
 .scoreboard table td,
 th {
-	padding: 0.3rem;
+	padding: 0.5rem;
 }
 
 .scoreboard table thead th {
@@ -308,6 +316,30 @@ th {
 #warning-label {
 	margin-top: 0.2rem;
 	color: rgb(226, 78, 78);
+}
+
+.difficulty-tab-container {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+.difficulty-tab {
+	flex-grow: 1;
+	background-color: #0f111369;
+	border: none;
+	font-size: 0.65rem;
+	margin-bottom: 0.2rem;
+	border: 1px solid #676b72;
+}
+
+.difficulty-tab-selected {
+	background-color: rgba(255, 255, 255, 0.836);
+	color: #22262d;
+}
+
+.difficulty-tab-selected h2 {
+	color: #22262d;
 }
 
 @media screen and (max-width: 700px) {

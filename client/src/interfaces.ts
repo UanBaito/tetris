@@ -35,4 +35,4 @@ export interface storedTetromino {
 	tetromino: tetromino | null;
 }
 
-export type user = { name: string; linescleared: number; time: number };
+export type scoreboardItem = { name: string; points: number; time: number };

@@ -670,7 +670,11 @@ export default function Game() {
 				/>
 			</div>
 			<ScoreBoard>
-				<ScoreForm score={scoreState} retryState={retryState} />
+				<ScoreForm
+					score={scoreState}
+					retryState={retryState}
+					difficulty={difficulty}
+				/>
 				<ScoreBoardList />
 			</ScoreBoard>
 		</div>

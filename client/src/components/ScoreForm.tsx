@@ -1,18 +1,21 @@
 import { useEffect, useRef } from 'react';
+import { difficulties } from '../constants';
 
 type props = {
 	score: { linesCleared: number; time: number };
 	retryState: boolean;
+	difficulty: number;
 };
 
 type user = { name: string; score: number; time: number };
 
-export default function ScoreForm({ score, retryState }: props) {
+export default function ScoreForm({ score, retryState, difficulty }: props) {
 	const nameInputRef = useRef<HTMLInputElement>(null);
 	const nameRef = useRef<string>('');
 	const dialogRef = useRef<HTMLDialogElement>(null);
 
 	async function postUser() {
+		/// Tries to create user, returns false if operation fails.
 		try {
 			const res = await fetch('http://localhost:9001/user', {
 				method: 'post',
@@ -23,12 +26,13 @@ export default function ScoreForm({ score, retryState }: props) {
 			});
 
 			if (res.status === 200) {
-				console.log('good');
+				return true;
 			} else {
-				throw new Error('something went wrong');
+				return false;
 			}
 		} catch (err) {
 			console.log(err);
+			return false;
 		}
 	}
 
@@ -36,7 +40,7 @@ export default function ScoreForm({ score, retryState }: props) {
 		const name = localStorage.getItem('name');
 		if (name) {
 			nameRef.current = name;
-			updateUserScore();
+			updateScoreBoard();
 		} else {
 			dialogRef.current?.showModal();
 		}
@@ -45,8 +49,6 @@ export default function ScoreForm({ score, retryState }: props) {
 	async function validateUsername(e: React.FormEvent<HTMLFormElement>) {
 		const warningLabel = document.getElementById('warning-label');
 		try {
-			const response = await fetch('http://localhost:9001/user');
-			const usersList: user[] = await response.json();
 			const name = nameInputRef.current?.value;
 			if (name === '') {
 				dialogRef.current?.showModal();
@@ -55,8 +57,9 @@ export default function ScoreForm({ score, retryState }: props) {
 					warningLabel.textContent = 'Username cannot be empty';
 				}
 			} else {
-				const isUserOccupied = usersList.some((user) => user.name === name);
-				if (isUserOccupied) {
+				nameRef.current = name!;
+				const isUsernameFree = await postUser();
+				if (!isUsernameFree) {
 					dialogRef.current?.showModal();
 					nameInputRef.current?.setAttribute('data-isvalid', 'true');
 					if (warningLabel) {
@@ -64,9 +67,7 @@ export default function ScoreForm({ score, retryState }: props) {
 					}
 				} else {
 					localStorage.setItem('name', name!);
-					nameRef.current = name!;
-					await postUser();
-					await updateUserScore();
+					await updateScoreBoard();
 				}
 			}
 			e.preventDefault();
@@ -75,7 +76,7 @@ export default function ScoreForm({ score, retryState }: props) {
 		}
 	}
 
-	async function updateUserScore() {
+	async function updateScoreBoard() {
 		if (nameRef.current === '') {
 			getUsername();
 			return;
@@ -83,10 +84,11 @@ export default function ScoreForm({ score, retryState }: props) {
 
 		/// TODO: check if user exists first
 		try {
-			const res = await fetch('http://localhost:9001/user', {
+			const res = await fetch('http://localhost:9001/scoreboard', {
 				method: 'put',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
+					difficulty: difficulties[difficulty],
 					name: nameRef.current,
 					linesCleared: score.linesCleared,
 					time: score.time
@@ -104,7 +106,7 @@ export default function ScoreForm({ score, retryState }: props) {
 	}
 
 	if (retryState) {
-		updateUserScore();
+		updateScoreBoard();
 	}
 
 	return (

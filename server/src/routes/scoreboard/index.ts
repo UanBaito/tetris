@@ -1,34 +1,39 @@
 import express from 'express';
 import db from '../../db';
+import format from 'pg-format';
+import { logError, logSuccess } from '../../logging';
 
 export const scoreboardRouter = express.Router();
 
 scoreboardRouter.put('/', async (req, res) => {
 	try {
 		const name: string = req.body.name;
-		const linescleared: number = req.body.linescleared;
+		const linesCleared: number = req.body.linesCleared;
 		const time: number = req.body.time;
-
-		await db.query(
-			'UPDATE users SET linescleared = $2 WHERE name = $1 AND linesCleared < $2',
-			[name, linescleared]
+		const difficulty: string = req.body.difficulty;
+		const sql = format(
+			'INSERT INTO %I as d (name, points, time) VALUES ($1, $2, $3) ON CONFLICT (name) DO UPDATE SET points = (CASE WHEN d.points < $2 THEN $2 ELSE d.points END), time = (CASE WHEN d.time < $3 THEN $3 ELSE d.time END)',
+			difficulty
 		);
-		await db.query('UPDATE users SET time = $2 WHERE name = $1 AND time < $2', [
-			name,
-			time
-		]);
+
+		await db.query(sql, [name, linesCleared, time]);
 
 		res.send('oki');
+		logSuccess('Score for player ' + req.body.name, ' updated/created');
 	} catch (err) {
-		console.log(err);
+		logError(err);
 	}
 });
 
 scoreboardRouter.get('/', async (req, res) => {
 	try {
-		const results = await db.query('SELECT * FROM users');
-		res.send(results.rows);
+		const easy = await db.query('SELECT * FROM easy');
+		const normal = await db.query('SELECT * FROM normal');
+		const hard = await db.query('SELECT * FROM hard');
+
+		res.send([easy.rows, normal.rows, hard.rows]);
+		logSuccess('Scoreboard ', ' sent');
 	} catch (err) {
-		console.log(err);
+		logError(err);
 	}
 });
