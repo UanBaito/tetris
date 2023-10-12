@@ -338,3 +338,42 @@ export const jlstzOffsetData = [
 
 export const tetrominoes = [I, L, J, O, S, T, Z];
 export const difficulties = ['easy', 'normal', 'hard'];
+
+export function initialDifficulty(difficulty: number) {
+	let dropInterval: number;
+	switch (difficulty) {
+		case 0:
+			dropInterval = 1000;
+			break;
+		case 1:
+			dropInterval = 800;
+			break;
+		case 2:
+			dropInterval = 600;
+			break;
+		default:
+			///unlikely not to be one of the options before, but I want typescript to just shut up
+			dropInterval = 800;
+			break;
+	}
+	return dropInterval;
+}
+
+export function decreaseDelayBy(difficulty: number) {
+	let decraseBy: number;
+	switch (difficulty) {
+		case 0:
+			decraseBy = 10;
+			break;
+		case 1:
+			decraseBy = 25;
+			break;
+		case 2:
+			decraseBy = 35;
+			break;
+		default:
+			decraseBy = 25;
+			break;
+	}
+	return decraseBy;
+}

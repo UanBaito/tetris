@@ -6,7 +6,13 @@ import {
 	useState
 } from 'react';
 import { storedTetromino, tetromino } from '../interfaces';
-import { iOffsetData, jlstzOffsetData, tetrominoes } from '../constants';
+import {
+	decreaseDelayBy,
+	iOffsetData,
+	initialDifficulty,
+	jlstzOffsetData,
+	tetrominoes
+} from '../constants';
 import GameBox from './GameBox';
 import Square from './Square';
 import TetrominoStorage from './TetrominoStorage';
@@ -41,6 +47,7 @@ export default function Game() {
 	>([]);
 
 	const [difficulty, setDifficulty] = useState(1);
+	const dropDelayRef = useRef(0);
 
 	/// TODO: add actual points property
 	const [scoreState, setScoreState] = useState({ linesCleared: 0, time: 0 });
@@ -60,11 +67,12 @@ export default function Game() {
 	 */
 	useEffect(() => {
 		if (gameState) {
+			dropDelayRef.current = initialDifficulty(difficulty);
 			intervalRef.current = setInterval(() => {
 				setInternalClockState((prevState) => {
 					return prevState + 1000;
 				});
-			}, 1000);
+			}, dropDelayRef.current);
 
 			timeIntervalRef.current = setInterval(() => {
 				setScoreState((prevState) => ({
@@ -81,6 +89,24 @@ export default function Game() {
 	function startGame() {
 		setgameState(true);
 		setTetrominoesQueueState(createNewTetrominoQueue());
+	}
+
+	const nextTimeLimit = useRef(10000);
+
+	function RaiseDifficulty() {
+		if (
+			scoreState.time >= nextTimeLimit.current &&
+			dropDelayRef.current > 100
+		) {
+			nextTimeLimit.current = nextTimeLimit.current + 10000;
+			dropDelayRef.current = dropDelayRef.current - decreaseDelayBy(difficulty);
+			clearInterval(intervalRef.current);
+			intervalRef.current = setInterval(() => {
+				setInternalClockState((prevState) => {
+					return prevState + 1000;
+				});
+			}, dropDelayRef.current);
+		}
 	}
 
 	function createNewTetrominoQueue() {
@@ -540,6 +566,7 @@ export default function Game() {
 
 	useEffect(() => {
 		if (gameState) {
+			RaiseDifficulty();
 			if (checkBelow()) {
 				drop(1);
 			} else {
