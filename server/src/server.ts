@@ -9,7 +9,7 @@ import { scoreboardRouter } from './routes/scoreboard';
 const app = express();
 const port = 9001;
 
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({ origin: 'https://classic-tetris-app.web.app/' }));
 app.use((req, res, next) => {
 	logIp(req);
 	next();

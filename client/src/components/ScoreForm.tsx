@@ -17,7 +17,7 @@ export default function ScoreForm({ score, retryState, difficulty }: props) {
 	async function postUser() {
 		/// Tries to create user, returns false if operation fails.
 		try {
-			const res = await fetch('http://localhost:9001/user', {
+			const res = await fetch('https://classic-tetris-app.onrender.com/user', {
 				method: 'post',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
@@ -84,16 +84,19 @@ export default function ScoreForm({ score, retryState, difficulty }: props) {
 
 		/// TODO: check if user exists first
 		try {
-			const res = await fetch('http://localhost:9001/scoreboard', {
-				method: 'put',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					difficulty: difficulties[difficulty],
-					name: nameRef.current,
-					linesCleared: score.linesCleared,
-					time: score.time
-				})
-			});
+			const res = await fetch(
+				'https://classic-tetris-app.onrender.com/scoreboard',
+				{
+					method: 'put',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						difficulty: difficulties[difficulty],
+						name: nameRef.current,
+						linesCleared: score.linesCleared,
+						time: score.time
+					})
+				}
+			);
 
 			if (res.status === 200) {
 				console.log('good');

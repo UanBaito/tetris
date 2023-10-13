@@ -12,7 +12,9 @@ export default function () {
 
 	useEffect(() => {
 		async function fetchBoard() {
-			const response = await fetch('http://localhost:9001/scoreboard');
+			const response = await fetch(
+				'https://classic-tetris-app.onrender.com/scoreboard'
+			);
 			const difficultiesArray: scoreboardItem[][] = await response.json();
 			setDifficultiesArray(difficultiesArray);
 		}
