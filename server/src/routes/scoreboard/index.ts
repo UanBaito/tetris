@@ -41,5 +41,6 @@ scoreboardRouter.get('/', async (req, res) => {
 		logSuccess('Scoreboard ', ' sent');
 	} catch (err) {
 		logError(err);
+		res.status(500).send('Something went wrong');
 	}
 });
