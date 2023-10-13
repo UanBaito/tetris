@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const pg_1 = require("pg");
 require("dotenv/config");
-const db = new pg_1.Client();
+const db = new pg_1.Client({ connectionString: process.env.PGURL });
 function connectToDB() {
     return __awaiter(this, void 0, void 0, function* () {
         yield db.connect();
